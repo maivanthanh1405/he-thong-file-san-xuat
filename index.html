@@ -173,7 +173,7 @@
         children: [
           { title: "Hao Hụt Nhựa Máy 150-1", desc: "Tổng hợp theo kỳ", icon: "monitoring", url: "https://docs.google.com/spreadsheets/d/1psZjAGlIrs1Lett0Pn9jEGlPJQpjrxzmmYib0rq3vro/edit?usp=drive_link" },
           { title: "Vấn Đề Sản Xuất", desc: "Log vấn đề theo ngày", icon: "report", url: "https://docs.google.com/spreadsheets/d/1iglhTTQmQjEmm1k0GJlSKjFZ3RrG_xRrI41FNylNHPQ/edit?usp=sharing" },
-          { title: "Hiệu Suất Sản Xuất", desc: "Theo máy / theo ca", icon: "speed", url: "https://docs.google.com/spreadsheets/d/1xN1elBe--NYkOcQoytVyaF7gp19G_SXt9kBfu2A5ELw/edit?usp=sharing" },
+          { title: "Tiến Độ Sản Xuất", desc: "Tình hình tiến độ sản xuất đơn hàng", icon: "speed", url: "https://docs.google.com/spreadsheets/d/1frC8tlVWaC0ID1VwoYoJC9pVF68oNsYJBZkunZHjNA0/edit?usp=sharing" },
           { title: "Tồn kho BTP", desc: "Bán thành phẩm", icon: "inventory_2", url: "https://docs.google.com/spreadsheets/d/1rSFEg1G1A7igu474LjPqgZi2Q9Rh6HDy_xLCDjs4E3E/edit?usp=sharing" },
         ],
       },
@@ -195,6 +195,9 @@
         color: "bg-slate-600",
         children: [
           { title: "Trang Chủ Nhập Liệu Sản Xuất", desc: "Trung tâm link", icon: "home", url: "https://maivanthanh1405.github.io/portal-san-xuat/" },
+
+          /* ✅ THÊM MỚI: giống y hệt 1 link bình thường */
+          { title: "Tài Liệu Nội Bộ", desc: "Kho tài liệu nội bộ ngành Trung Thế", icon: "admin_panel_settings", url: "DÁN_LINK_CỦA_ANH_VÀO_ĐÂY" },
         ],
       },
       {
@@ -208,8 +211,6 @@
           { title: "Tính Trọng Lượng & Mét Máy DRUM", desc: "Quy đổi kg ↔ m", icon: "swap_horiz", url: "https://docs.google.com/spreadsheets/d/1w2sHeFpmBOFY2s_ewWX4iTYAOqivarST2GYQwI-Jyus/edit?usp=drive_link" },
         ],
       },
-
-      /* ✅ HƯỚNG DẪN CÔNG NGHỆ */
       {
         id: "huongdan_congnghe",
         title: "HƯỚNG DẪN CÔNG NGHỆ",
@@ -217,12 +218,9 @@
         icon: "menu_book",
         color: "bg-purple-600",
         children: [
-          // ✅ thay link thật của bạn ở đây
           { title: "Tài liệu Hướng dẫn công nghệ (Ngành TT)", desc: "Tổng hợp & cập nhật", icon: "description", url: "https://drive.google.com/drive/folders/10QPukkdvOz2zybUfnsM7n64OiT0ascqz?usp=drive_link" },
         ],
       },
-
-      /* ✅ BIỂU NHẬP LIỆU */
       {
         id: "bieunhaplieu",
         title: "BIỂU NHẬP LIỆU (NGÀNH TT)",
@@ -246,7 +244,8 @@
     function escapeHtml(s) {
       return (s ?? "").toString()
         .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;").replaceAll('"', "&quot;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
     }
 
@@ -378,7 +377,6 @@
           const expanded = btn.getAttribute("aria-expanded") === "true";
           setExpanded(id, !expanded);
 
-          // cập nhật trạng thái nút "Mở hết" theo thực tế
           const anyClosed = DATA.some(g => {
             const b = document.querySelector(`[data-accordion="${CSS.escape(g.id)}"]`);
             return b && b.getAttribute("aria-expanded") !== "true";
@@ -408,7 +406,6 @@
 
     $("btnTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-    // Theme toggle (lưu local)
     const THEME_KEY = "portal_theme";
     function applyTheme(mode) {
       if (mode === "dark") document.documentElement.classList.add("dark");
@@ -422,17 +419,14 @@
       applyTheme(isDark ? "light" : "dark");
     });
 
-    // init
     (function init() {
       const saved = localStorage.getItem(THEME_KEY);
       applyTheme(saved || "light");
 
       render("");
 
-      // ✅ QUAN TRỌNG: MẶC ĐỊNH ĐÓNG HẾT (đúng như hình 2)
       DATA.forEach(g => setExpanded(g.id, false));
 
-      // nút "Mở hết" luôn đúng trạng thái ban đầu
       expandedAll = false;
       $("btnExpandAll").innerHTML =
         `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
