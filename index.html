@@ -52,7 +52,6 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 min-h-screen bg-grid bg-grid-pattern dark:bg-grid-pattern-dark">
-  <!-- TOP BAR -->
   <header class="sticky top-0 z-50 w-full bg-primary dark:bg-[#0b1116] border-b border-white/10 shadow-md text-white">
     <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
@@ -67,7 +66,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <button id="btnTheme" class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors focus:outline-none" type="button">
+          <button id="btnTheme" class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors focus:outline-none" type="button" title="Đổi Dark/Light">
             <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
           </button>
           <div class="h-8 w-px bg-white/10"></div>
@@ -85,9 +84,7 @@
     </div>
   </header>
 
-  <!-- MAIN -->
   <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Title / tools -->
     <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
       <div>
         <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-blue-100 text-blue-800 border border-blue-200 text-xs font-extrabold uppercase tracking-wider dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800/60">
@@ -107,24 +104,31 @@
         </p>
       </div>
 
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center">
-        <div class="relative w-full sm:w-[420px]">
+      <div class="flex flex-col sm:flex-row gap-3 sm:items-center w-full lg:w-auto">
+        <div class="relative w-full sm:w-[440px]">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
           <input id="q"
             class="w-full pl-10 pr-3 py-3 rounded-xl bg-white/90 dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-soft focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-800 outline-none"
-            placeholder="Tìm nhanh theo tên file / mô tả..."
+            placeholder="Tìm nhanh: kéo xoắn, bọc, CCVL, hướng dẫn..."
             type="text" />
         </div>
+
         <button id="btnExpandAll"
           class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-soft hover:shadow-card transition-all font-bold"
           type="button">
           <span class="material-symbols-outlined">unfold_more</span>
           Mở hết
         </button>
+
+        <button id="btnClear"
+          class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-soft hover:shadow-card transition-all font-extrabold uppercase tracking-wide text-xs"
+          type="button">
+          <span class="material-symbols-outlined text-[20px] text-slate-400">close</span>
+          Xóa lọc
+        </button>
       </div>
     </div>
 
-    <!-- Card -->
     <section class="bg-white/85 dark:bg-surface-dark rounded-2xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
       <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
         <div class="flex items-center gap-2 font-extrabold text-primary dark:text-white uppercase tracking-wider">
@@ -151,7 +155,7 @@
 
   <script>
     /***********************
-     * 1) DATA: THÊM FILE Ở ĐÂY
+     * 1) DATA: DANH SÁCH FILE
      ***********************/
     const DATA = [
       {
@@ -195,9 +199,7 @@
         color: "bg-slate-600",
         children: [
           { title: "Trang Chủ Nhập Liệu Sản Xuất", desc: "Trung tâm link", icon: "home", url: "https://maivanthanh1405.github.io/portal-san-xuat/" },
-
-          /* ✅ THÊM MỚI: giống y hệt 1 link bình thường */
-          { title: "Tài Liệu Nội Bộ", desc: "Kho tài liệu nội bộ ngành Trung Thế", icon: "admin_panel_settings", url: "DÁN_LINK_CỦA_ANH_VÀO_ĐÂY" },
+          { title: "Tài Liệu Nội Bộ", desc: "Kho tài liệu nội bộ ngành Trung Thế", icon: "admin_panel_settings", url: "" },
         ],
       },
       {
@@ -207,6 +209,7 @@
         icon: "functions",
         color: "bg-indigo-600",
         children: [
+          { title: "Tính Toán Thời Gian Tiến Độ", desc: "Dự báo thời gian hoàn thành đơn hàng (LSX)", icon: "schedule", url: "https://docs.google.com/spreadsheets/d/1B-qRiKjlEZw4nArUaG-joRzh5U1ZUuW_f5EXNFBuQLE/edit?usp=sharing" },
           { title: "Tính Sức Chứa Ture", desc: "Theo đường kính / chiều dài", icon: "straighten", url: "https://docs.google.com/spreadsheets/d/1MnZ-QwGlFKC9L8kFWfntyOMCYbJwCnHejU9zJp61rU8/edit?usp=drive_link" },
           { title: "Tính Trọng Lượng & Mét Máy DRUM", desc: "Quy đổi kg ↔ m", icon: "swap_horiz", url: "https://docs.google.com/spreadsheets/d/1w2sHeFpmBOFY2s_ewWX4iTYAOqivarST2GYQwI-Jyus/edit?usp=drive_link" },
         ],
@@ -237,7 +240,7 @@
     ];
 
     /***********************
-     * 2) RENDER
+     * 2) HELPERS
      ***********************/
     const $ = (id) => document.getElementById(id);
 
@@ -249,26 +252,56 @@
         .replaceAll("'", "&#039;");
     }
 
+    function normalizeText(s) {
+      return (s || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function isOkUrl(url) {
+      return /^https?:\/\//i.test((url || "").trim());
+    }
+
     function totalFiles() {
       return DATA.reduce((sum, g) => sum + (g.children?.length || 0), 0);
     }
 
+    const HOVER_MAP = {
+      "bg-blue-600":      { bg: "hover:bg-blue-600",      bd: "hover:border-blue-600" },
+      "bg-fuchsia-600":   { bg: "hover:bg-fuchsia-600",   bd: "hover:border-fuchsia-600" },
+      "bg-emerald-600":   { bg: "hover:bg-emerald-600",   bd: "hover:border-emerald-600" },
+      "bg-slate-600":     { bg: "hover:bg-slate-600",      bd: "hover:border-slate-600" },
+      "bg-indigo-600":    { bg: "hover:bg-indigo-600",     bd: "hover:border-indigo-600" },
+      "bg-purple-600":    { bg: "hover:bg-purple-600",     bd: "hover:border-purple-600" },
+      "bg-orange-600":    { bg: "hover:bg-orange-600",     bd: "hover:border-orange-600" },
+      "bg-accent-orange": { bg: "hover:bg-accent-orange", bd: "hover:border-accent-orange" },
+    };
+
+    function getHover(color) {
+      return HOVER_MAP[color] || { bg: "hover:bg-primary", bd: "hover:border-primary" };
+    }
+
     function groupMatches(group, query) {
       if (!query) return true;
-      const q = query.toLowerCase();
-      const inGroup = (group.title + " " + group.subtitle).toLowerCase().includes(q);
+      const q = normalizeText(query);
+      const inGroup = normalizeText(group.title + " " + group.subtitle).includes(q);
       const inChild = (group.children || []).some(c =>
-        (c.title + " " + c.desc).toLowerCase().includes(q)
+        normalizeText((c.title || "") + " " + (c.desc || "")).includes(q)
       );
       return inGroup || inChild;
     }
 
     function childMatches(child, query) {
       if (!query) return true;
-      const q = query.toLowerCase();
-      return (child.title + " " + child.desc).toLowerCase().includes(q);
+      const q = normalizeText(query);
+      const hay = normalizeText((child.title || "") + " " + (child.desc || ""));
+      return hay.includes(q);
     }
 
+    /***********************
+     * 3) RENDER
+     ***********************/
     function render(query = "") {
       $("countAll").textContent = totalFiles();
 
@@ -308,34 +341,77 @@
 
               <div id="panel-${escapeHtml(g.id)}" class="hidden border-t border-slate-200 dark:border-slate-700">
                 <div class="p-4 grid gap-3">
-                  ${children.map(c => `
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-[#11161d] px-4 py-3 hover:shadow-soft transition-shadow">
-                      <div class="flex items-start gap-3 min-w-0">
-                        <div class="size-10 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
-                          <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">${escapeHtml(c.icon || "description")}</span>
-                        </div>
-                        <div class="min-w-0">
-                          <div class="font-extrabold text-slate-800 dark:text-white truncate">${escapeHtml(c.title)}</div>
-                          <div class="text-sm text-slate-500 dark:text-slate-400 font-medium truncate">${escapeHtml(c.desc || "")}</div>
-                        </div>
-                      </div>
+                  ${children.map(c => {
+                    const ok = isOkUrl(c.url);
+                    const hv = getHover(g.color);
+                    const hoverBgCls = hv.bg;
+                    const hoverBorderCls = hv.bd;
 
-                      <div class="flex items-center justify-end">
-                        <a href="${escapeHtml(c.url || "#")}" target="_blank" rel="noopener noreferrer"
-                           class="inline-flex items-center justify-center gap-2 px-4 h-10 rounded-xl font-extrabold
-                                  bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10
-                                  text-primary dark:text-white hover:bg-primary hover:text-white hover:border-primary
-                                  transition-all shadow-soft">
-                          TRUY CẬP
-                          <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </a>
+                    return `
+                      <div class="group relative bg-white dark:bg-[#1c242e] rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-soft
+                                  hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 ${escapeHtml(g.color)} group-hover:w-2 transition-all"></div>
+
+                        <div class="flex items-center gap-5 pl-4 w-full md:w-auto min-w-0">
+                          <div class="relative shrink-0 flex items-center justify-center size-14 rounded-xl
+                                      bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10
+                                      text-slate-700 dark:text-slate-200
+                                      ${ok ? `${hoverBgCls} group-hover:text-white` : ""} transition-colors duration-300 shadow-soft">
+                            <span class="material-symbols-outlined text-[30px] group-hover:scale-110 transition-transform">
+                              ${escapeHtml(c.icon || "description")}
+                            </span>
+
+                            <div class="absolute -bottom-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-600">
+                              <span class="block size-2.5 ${ok ? "bg-green-500" : "bg-slate-400"} rounded-full"></span>
+                            </div>
+                          </div>
+
+                          <div class="flex flex-col min-w-0">
+                            <h4 class="text-lg font-extrabold text-slate-800 dark:text-white tracking-tight truncate max-w-[780px]">
+                              ${escapeHtml(c.title)}
+                            </h4>
+
+                            <div class="flex items-center gap-2 mt-1 flex-wrap">
+                              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-slate-100 dark:bg-white/5
+                                           text-slate-500 dark:text-slate-300 uppercase tracking-wider border border-slate-200 dark:border-white/10">
+                                ${escapeHtml(g.title)}
+                              </span>
+
+                              <p class="text-sm text-slate-500 dark:text-slate-400 font-medium truncate border-l border-slate-300 dark:border-slate-600 pl-2 max-w-[820px]">
+                                ${escapeHtml(c.desc || "")}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="mt-4 md:mt-0 w-full md:w-auto pl-4 md:pl-0 flex items-center justify-end">
+                          ${
+                            ok
+                            ? `<a href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer"
+                                 class="w-full md:w-auto flex items-center justify-center gap-2 rounded-xl
+                                        bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10
+                                        text-[#0f3460] dark:text-white
+                                        hover:text-white ${hoverBgCls} ${hoverBorderCls}
+                                        h-10 px-6 text-sm font-extrabold shadow-soft hover:shadow-card transition-all duration-200">
+                                  <span>TRUY CẬP</span>
+                                  <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                </a>`
+                            : `<button type="button" disabled
+                                 class="w-full md:w-auto flex items-center justify-center gap-2 rounded-xl
+                                        bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10
+                                        text-slate-400 cursor-not-allowed h-10 px-6 text-sm font-extrabold">
+                                  <span>CHƯA CÓ LINK</span>
+                                  <span class="material-symbols-outlined text-[18px]">link_off</span>
+                                </button>`
+                          }
+                        </div>
                       </div>
-                    </div>
-                  `).join("")}
+                    `;
+                  }).join("")}
 
                   ${children.length === 0 ? `
                     <div class="text-sm text-slate-500 dark:text-slate-400 px-1 py-2">
-                      Không có file con phù hợp để hiển thị (hãy thêm vào <b>children</b> trong DATA).
+                      Không có file con phù hợp để hiển thị.
                     </div>
                   ` : ""}
                 </div>
@@ -351,6 +427,10 @@
       `;
 
       wireAccordion();
+
+      if (query) {
+        DATA.filter(g => groupMatches(g, query)).forEach(g => setExpanded(g.id, true));
+      }
     }
 
     function setExpanded(id, expanded) {
@@ -390,7 +470,7 @@
     }
 
     /***********************
-     * 3) EVENTS
+     * 4) EVENTS
      ***********************/
     $("q").addEventListener("input", (e) => render(e.target.value));
 
@@ -404,12 +484,28 @@
         : `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
     });
 
+    $("btnClear").addEventListener("click", () => {
+      $("q").value = "";
+      render("");
+      $("q").focus();
+
+      expandedAll = false;
+      $("btnExpandAll").innerHTML =
+        `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
+      DATA.forEach(g => setExpanded(g.id, false));
+    });
+
     $("btnTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
+    /***********************
+     * 5) THEME
+     ***********************/
     const THEME_KEY = "portal_theme";
     function applyTheme(mode) {
       if (mode === "dark") document.documentElement.classList.add("dark");
       else document.documentElement.classList.remove("dark");
+
+      document.documentElement.classList.toggle("light", mode !== "dark");
 
       $("themeIcon").textContent = (mode === "dark") ? "light_mode" : "dark_mode";
       localStorage.setItem(THEME_KEY, mode);
@@ -421,12 +517,11 @@
 
     (function init() {
       const saved = localStorage.getItem(THEME_KEY);
-      applyTheme(saved || "light");
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      applyTheme(saved || (prefersDark ? "dark" : "light"));
 
       render("");
-
       DATA.forEach(g => setExpanded(g.id, false));
-
       expandedAll = false;
       $("btnExpandAll").innerHTML =
         `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
