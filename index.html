@@ -1,531 +1,548 @@
 <!DOCTYPE html>
-<html class="light" lang="vi">
+<html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Hệ thống file khối sản xuất - Ngành Trung Thế</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ngành Trung Thế - Hệ Thống File</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Thêm thư viện Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* CSS cho các class động của Tailwind */
+        @layer utilities {
+            .animate-in {
+                animation: animate-in 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
+            }
+            .fade-in {
+                animation-name: fade-in;
+            }
+            .slide-in-from-top-4 {
+                animation-name: slide-in-from-top-4;
+            }
+            .slide-in-from-bottom-8 {
+                animation-name: slide-in-from-bottom-8;
+            }
+            .slide-in-from-bottom-12 {
+                animation-name: slide-in-from-bottom-12;
+            }
+            .zoom-in-95 {
+                animation-name: zoom-in-95;
+            }
+        }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slide-in-from-top-4 {
+            from { transform: translateY(-1rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slide-in-from-bottom-8 {
+            from { transform: translateY(2rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slide-in-from-bottom-12 {
+            from { transform: translateY(3rem); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes zoom-in-95 {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Scrollbar toàn trang (Tùy chỉnh thanh cuộn trình duyệt) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #010205;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
 
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            primary: "#0f3460",
-            "primary-dark": "#0a2545",
-            secondary: "#536d88",
-            "background-light": "#f3f6fb",
-            "background-dark": "#0b1116",
-            "surface-light": "#ffffff",
-            "surface-dark": "#161b22",
-            "accent-orange": "#e94e1b",
-          },
-          boxShadow: {
-            soft: "0 4px 10px rgba(2, 6, 23, 0.06)",
-            card: "0 12px 28px rgba(2, 6, 23, 0.08)",
-            glow: "0 0 18px rgba(15, 52, 96, 0.18)",
-          },
-          backgroundImage: {
-            "grid-pattern":
-              "linear-gradient(to right, rgba(148,163,184,0.20) 1px, transparent 1px), linear-gradient(to bottom, rgba(148,163,184,0.20) 1px, transparent 1px)",
-            "grid-pattern-dark":
-              "linear-gradient(to right, rgba(30,41,59,0.65) 1px, transparent 1px), linear-gradient(to bottom, rgba(30,41,59,0.65) 1px, transparent 1px)",
-          },
-        },
-      },
-    };
-  </script>
-
-  <style>
-    body { font-family: Inter, sans-serif; }
-    .material-symbols-outlined{
-      font-variation-settings: 'FILL' 0,'wght' 500,'GRAD' 0,'opsz' 24;
-    }
-    .bg-grid { background-size: 38px 38px; }
-  </style>
+        /* Scrollbar cho các thẻ con bên trong */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
 </head>
+<body class="min-h-screen bg-[#010205] text-slate-200 font-sans relative overflow-x-hidden selection:bg-white/20">
 
-<body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-200 min-h-screen bg-grid bg-grid-pattern dark:bg-grid-pattern-dark">
-  <header class="sticky top-0 z-50 w-full bg-primary dark:bg-[#0b1116] border-b border-white/10 shadow-md text-white">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex h-16 items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="flex items-center justify-center size-10 rounded-lg bg-white/10 border border-white/10 shadow-inner">
-            <span class="material-symbols-outlined text-[26px]">account_tree</span>
-          </div>
-          <div class="leading-tight">
-            <div class="text-[15px] font-extrabold tracking-wide uppercase">HỆ THỐNG FILE KHỐI SẢN XUẤT</div>
-            <div class="text-[11px] text-slate-300 font-semibold uppercase tracking-wider">Ngành Trung Thế</div>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <button id="btnTheme" class="flex items-center justify-center size-10 rounded-full hover:bg-white/10 transition-colors focus:outline-none" type="button" title="Đổi Dark/Light">
-            <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
-          </button>
-          <div class="h-8 w-px bg-white/10"></div>
-          <div class="flex items-center gap-3">
-            <div class="hidden sm:block text-right">
-              <div class="text-sm font-bold">Quản lý sản xuất</div>
-              <div class="text-[11px] text-slate-300 font-semibold">Admin</div>
-            </div>
-            <div class="size-10 rounded-full bg-white/10 border border-white/15 flex items-center justify-center">
-              <span class="material-symbols-outlined">person</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <main class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-6">
-      <div>
-        <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-blue-100 text-blue-800 border border-blue-200 text-xs font-extrabold uppercase tracking-wider dark:bg-blue-900/30 dark:text-blue-200 dark:border-blue-800/60">
-          <span class="material-symbols-outlined text-base">home</span>
-          Trang chủ
-        </div>
-        <h1 class="mt-3 text-4xl font-extrabold tracking-tight text-primary dark:text-white">TRUNG TÂM TRUY CẬP FILE</h1>
-        <p class="mt-1 text-slate-500 dark:text-slate-400 font-medium">
-          Danh mục file theo nhóm:
-          <span class="font-semibold">Định mức</span> •
-          <span class="font-semibold">Báo cáo</span> •
-          <span class="font-semibold">Nhân sự</span> •
-          <span class="font-semibold">Bảo lưu</span> •
-          <span class="font-semibold">Tính toán</span> •
-          <span class="font-semibold">Biểu nhập liệu</span> •
-          <span class="font-semibold">Hướng dẫn công nghệ</span>
-        </p>
-      </div>
-
-      <div class="flex flex-col sm:flex-row gap-3 sm:items-center w-full lg:w-auto">
-        <div class="relative w-full sm:w-[440px]">
-          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-          <input id="q"
-            class="w-full pl-10 pr-3 py-3 rounded-xl bg-white/90 dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-soft focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-800 outline-none"
-            placeholder="Tìm nhanh: kéo xoắn, bọc, CCVL, hướng dẫn..."
-            type="text" />
-        </div>
-
-        <button id="btnExpandAll"
-          class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-soft hover:shadow-card transition-all font-bold"
-          type="button">
-          <span class="material-symbols-outlined">unfold_more</span>
-          Mở hết
-        </button>
-
-        <button id="btnClear"
-          class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-slate-700 shadow-soft hover:shadow-card transition-all font-extrabold uppercase tracking-wide text-xs"
-          type="button">
-          <span class="material-symbols-outlined text-[20px] text-slate-400">close</span>
-          Xóa lọc
-        </button>
-      </div>
+    <!-- 1. MÔI TRƯỜNG KHÔNG GIAN (SPATIAL ENVIRONMENT) -->
+    <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <!-- Core Glow -->
+        <div class="absolute top-[20%] left-[20%] w-[60vw] h-[60vw] rounded-full bg-indigo-900/20 blur-[150px] mix-blend-screen animate-[pulse_10s_ease-in-out_infinite]"></div>
+        <div class="absolute bottom-[10%] right-[10%] w-[50vw] h-[50vw] rounded-full bg-cyan-900/15 blur-[120px] mix-blend-screen animate-[pulse_15s_ease-in-out_infinite_alternate]"></div>
+        <!-- Lưới tọa độ không gian siêu mờ -->
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
     </div>
 
-    <section class="bg-white/85 dark:bg-surface-dark rounded-2xl border border-slate-200 dark:border-slate-700 shadow-card overflow-hidden">
-      <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
-        <div class="flex items-center gap-2 font-extrabold text-primary dark:text-white uppercase tracking-wider">
-          <span class="material-symbols-outlined text-slate-400">folder</span>
-          Danh mục file
-        </div>
-        <div class="text-xs font-extrabold px-3 py-1 rounded-full bg-primary text-white shadow-soft">
-          <span id="countAll">0</span> FILE
-        </div>
-      </div>
-
-      <div id="list" class="p-5 grid gap-4"></div>
-
-      <div class="px-6 py-4 border-t border-slate-200 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400 flex items-center justify-between">
-        <div class="font-medium">
-          Tip: Danh sách file được phân loại theo nhóm chức năng để dễ tìm và quản lý.
-        </div>
-        <button id="btnTop" class="inline-flex items-center gap-2 font-extrabold text-primary hover:underline" type="button">
-          LÊN ĐẦU TRANG <span class="material-symbols-outlined text-base">arrow_upward</span>
-        </button>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    /***********************
-     * 1) DATA: DANH SÁCH FILE
-     ***********************/
-    const DATA = [
-      {
-        id: "dinhmuc",
-        title: "ĐỊNH MỨC",
-        subtitle: "Tổng hợp sản lượng / định mức theo ca",
-        icon: "fact_check",
-        color: "bg-blue-600",
-        children: [
-          { title: "Tính Sản Lượng Trung Thế", desc: "Theo ca / theo máy", icon: "calculate", url: "https://docs.google.com/spreadsheets/d/1RRSFQK7GocjevGYC-uYkkXwRenyN2U0qHXtx2B69I44/edit?usp=drive_link" },
-        ],
-      },
-      {
-        id: "baocao",
-        title: "BÁO CÁO",
-        subtitle: "Theo dõi hao hụt / nguyên nhân / hiệu suất / tồn kho",
-        icon: "bar_chart",
-        color: "bg-fuchsia-600",
-        children: [
-          { title: "Hao Hụt Nhựa Máy 150-1", desc: "Tổng hợp theo kỳ", icon: "monitoring", url: "https://docs.google.com/spreadsheets/d/1psZjAGlIrs1Lett0Pn9jEGlPJQpjrxzmmYib0rq3vro/edit?usp=drive_link" },
-          { title: "Vấn Đề Sản Xuất", desc: "Log vấn đề theo ngày", icon: "report", url: "https://docs.google.com/spreadsheets/d/1iglhTTQmQjEmm1k0GJlSKjFZ3RrG_xRrI41FNylNHPQ/edit?usp=sharing" },
-          { title: "Tiến Độ Sản Xuất", desc: "Tình hình tiến độ sản xuất đơn hàng", icon: "speed", url: "https://docs.google.com/spreadsheets/d/1frC8tlVWaC0ID1VwoYoJC9pVF68oNsYJBZkunZHjNA0/edit?usp=sharing" },
-          { title: "Tồn kho BTP", desc: "Bán thành phẩm", icon: "inventory_2", url: "https://docs.google.com/spreadsheets/d/1rSFEg1G1A7igu474LjPqgZi2Q9Rh6HDy_xLCDjs4E3E/edit?usp=sharing" },
-        ],
-      },
-      {
-        id: "nhansu",
-        title: "NHÂN SỰ",
-        subtitle: "Quản lý nhân sự ngành trung thế",
-        icon: "group",
-        color: "bg-emerald-600",
-        children: [
-          { title: "Quản Lý Nhân Sự Ngành Trung Thế", desc: "Danh sách / phân công", icon: "badge", url: "https://docs.google.com/spreadsheets/d/1IRFJuO6DXAPec66QtAcGtYAzpSO9_Xo_mSJ8fa5ORus/edit?usp=drive_link" },
-        ],
-      },
-      {
-        id: "baoluu",
-        title: "BẢO LƯU TÀI LIỆU",
-        subtitle: "Tài liệu chuẩn / hướng dẫn / biểu mẫu",
-        icon: "folder_copy",
-        color: "bg-slate-600",
-        children: [
-          { title: "Trang Chủ Nhập Liệu Sản Xuất", desc: "Trung tâm link", icon: "home", url: "https://maivanthanh1405.github.io/portal-san-xuat/" },
-          { title: "Tài Liệu Nội Bộ", desc: "Kho tài liệu nội bộ ngành Trung Thế", icon: "admin_panel_settings", url: "https://drive.google.com/drive/folders/1ZcukORZ2BSx71RL2ZUjxKoZ1GgmCiM1u?usp=sharing" },
-        ],
-      },
-      {
-        id: "tinhtoan",
-        title: "FILE TÍNH TOÁN",
-        subtitle: "Công cụ tính nhanh hỗ trợ sản xuất",
-        icon: "functions",
-        color: "bg-indigo-600",
-        children: [
-          { title: "Tính Toán Thời Gian Tiến Độ", desc: "Dự báo thời gian hoàn thành đơn hàng (LSX)", icon: "schedule", url: "https://docs.google.com/spreadsheets/d/1B-qRiKjlEZw4nArUaG-joRzh5U1ZUuW_f5EXNFBuQLE/edit?usp=sharing" },
-          { title: "Tính Sức Chứa Ture", desc: "Theo đường kính / chiều dài", icon: "straighten", url: "https://docs.google.com/spreadsheets/d/1MnZ-QwGlFKC9L8kFWfntyOMCYbJwCnHejU9zJp61rU8/edit?usp=drive_link" },
-          { title: "Tính Trọng Lượng & Mét Máy DRUM", desc: "Quy đổi kg ↔ m", icon: "swap_horiz", url: "https://docs.google.com/spreadsheets/d/1w2sHeFpmBOFY2s_ewWX4iTYAOqivarST2GYQwI-Jyus/edit?usp=drive_link" },
-        ],
-      },
-      {
-        id: "huongdan_congnghe",
-        title: "HƯỚNG DẪN CÔNG NGHỆ",
-        subtitle: "Quy trình / hướng dẫn vận hành / tiêu chuẩn ngành TT",
-        icon: "menu_book",
-        color: "bg-purple-600",
-        children: [
-          { title: "Tài liệu Hướng dẫn công nghệ (Ngành TT)", desc: "Tổng hợp & cập nhật", icon: "description", url: "https://drive.google.com/drive/folders/10QPukkdvOz2zybUfnsM7n64OiT0ascqz?usp=drive_link" },
-        ],
-      },
-      {
-        id: "bieunhaplieu",
-        title: "BIỂU NHẬP LIỆU (NGÀNH TT)",
-        subtitle: "Các biểu Google Sheets nhập liệu theo công đoạn",
-        icon: "edit_document",
-        color: "bg-orange-600",
-        children: [
-          { title: "Kéo xoắn trung thế", desc: "Biểu nhập liệu kéo xoắn", icon: "build", url: "https://docs.google.com/spreadsheets/d/1x9RWzuJ_pX-DptP_MDOa5h0dRLjsNWXgPlimsByF71w/edit?usp=sharing" },
-          { title: "Biểu bọc trung thế", desc: "Biểu nhập liệu bọc", icon: "precision_manufacturing", url: "https://docs.google.com/spreadsheets/d/173-VOqYWRt1a_AZ6ZKgBCsoieQhEJaAOTT6XWW1Xibk/edit?usp=sharing" },
-          { title: "Biểu CCVL", desc: "Nhập liệu công đoạn CCVL", icon: "analytics", url: "https://docs.google.com/spreadsheets/d/1pY_dUEmiuWnaArQ4K0h7gsxyR-3QlNynWUf03fgkkwY/edit?usp=sharing" },
-          { title: "Giải trình QTVT ngành TT", desc: "Ghi nhận & giải trình phát sinh", icon: "assignment", url: "https://docs.google.com/spreadsheets/d/1Gy1dMiSkyTACtj765kATRwQ1FXyiBX-IxvOzmzJWDHw/edit?usp=sharing" },
-        ],
-      },
-    ];
-
-    /***********************
-     * 2) HELPERS
-     ***********************/
-    const $ = (id) => document.getElementById(id);
-
-    function escapeHtml(s) {
-      return (s ?? "").toString()
-        .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function normalizeText(s) {
-      return (s || "")
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-    }
-
-    function isOkUrl(url) {
-      return /^https?:\/\//i.test((url || "").trim());
-    }
-
-    function totalFiles() {
-      return DATA.reduce((sum, g) => sum + (g.children?.length || 0), 0);
-    }
-
-    const HOVER_MAP = {
-      "bg-blue-600":      { bg: "hover:bg-blue-600",      bd: "hover:border-blue-600" },
-      "bg-fuchsia-600":   { bg: "hover:bg-fuchsia-600",   bd: "hover:border-fuchsia-600" },
-      "bg-emerald-600":   { bg: "hover:bg-emerald-600",   bd: "hover:border-emerald-600" },
-      "bg-slate-600":     { bg: "hover:bg-slate-600",      bd: "hover:border-slate-600" },
-      "bg-indigo-600":    { bg: "hover:bg-indigo-600",     bd: "hover:border-indigo-600" },
-      "bg-purple-600":    { bg: "hover:bg-purple-600",     bd: "hover:border-purple-600" },
-      "bg-orange-600":    { bg: "hover:bg-orange-600",     bd: "hover:border-orange-600" },
-      "bg-accent-orange": { bg: "hover:bg-accent-orange", bd: "hover:border-accent-orange" },
-    };
-
-    function getHover(color) {
-      return HOVER_MAP[color] || { bg: "hover:bg-primary", bd: "hover:border-primary" };
-    }
-
-    function groupMatches(group, query) {
-      if (!query) return true;
-      const q = normalizeText(query);
-      const inGroup = normalizeText(group.title + " " + group.subtitle).includes(q);
-      const inChild = (group.children || []).some(c =>
-        normalizeText((c.title || "") + " " + (c.desc || "")).includes(q)
-      );
-      return inGroup || inChild;
-    }
-
-    function childMatches(child, query) {
-      if (!query) return true;
-      const q = normalizeText(query);
-      const hay = normalizeText((child.title || "") + " " + (child.desc || ""));
-      return hay.includes(q);
-    }
-
-    /***********************
-     * 3) RENDER
-     ***********************/
-    function render(query = "") {
-      $("countAll").textContent = totalFiles();
-
-      const html = DATA
-        .filter(g => groupMatches(g, query))
-        .map(g => {
-          const children = (g.children || []).filter(c => childMatches(c, query));
-          const count = children.length;
-
-          return `
-            <div class="group rounded-2xl border border-slate-200 dark:border-slate-700 bg-white/70 dark:bg-[#151b23] overflow-hidden shadow-soft">
-              <button class="w-full flex items-center justify-between gap-4 px-5 py-4 hover:bg-slate-50/80 dark:hover:bg-white/5 transition-colors"
-                      data-accordion="${escapeHtml(g.id)}" aria-expanded="false" type="button">
-                <div class="flex items-center gap-4 min-w-0">
-                  <div class="relative">
-                    <div class="size-12 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center">
-                      <span class="material-symbols-outlined text-slate-700 dark:text-slate-200">${escapeHtml(g.icon)}</span>
-                    </div>
-                    <div class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.5 h-10 rounded-full ${escapeHtml(g.color)}"></div>
-                  </div>
-
-                  <div class="min-w-0 text-left">
-                    <div class="flex items-center gap-2">
-                      <div class="text-lg font-extrabold text-primary dark:text-white truncate">${escapeHtml(g.title)}</div>
-                      <span class="text-[11px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300">
-                        ${count} file
-                      </span>
-                    </div>
-                    <div class="text-sm text-slate-500 dark:text-slate-400 font-medium truncate">${escapeHtml(g.subtitle)}</div>
-                  </div>
+    <div class="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col min-h-screen">
+        
+        <!-- 2. TOP BAR -->
+        <header class="py-8 flex justify-between items-center w-full mb-4 animate-in fade-in slide-in-from-top-4">
+            <div class="flex items-center gap-3 group cursor-pointer">
+                <div class="w-10 h-10 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center justify-center group-hover:bg-white/[0.08] transition-all shadow-[0_0_20px_rgba(255,255,255,0.02)]">
+                    <i data-lucide="waves" class="w-5 h-5 text-slate-300"></i>
                 </div>
-
-                <span class="material-symbols-outlined text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200 transition-colors">
-                  expand_more
-                </span>
-              </button>
-
-              <div id="panel-${escapeHtml(g.id)}" class="hidden border-t border-slate-200 dark:border-slate-700">
-                <div class="p-4 grid gap-3">
-                  ${children.map(c => {
-                    const ok = isOkUrl(c.url);
-                    const hv = getHover(g.color);
-                    const hoverBgCls = hv.bg;
-                    const hoverBorderCls = hv.bd;
-
-                    return `
-                      <div class="group relative bg-white dark:bg-[#1c242e] rounded-xl border border-slate-200 dark:border-slate-700 p-5 shadow-soft
-                                  hover:shadow-card hover:-translate-y-1 transition-all duration-300 flex flex-col md:flex-row items-start md:items-center justify-between overflow-hidden">
-                        <div class="absolute left-0 top-0 bottom-0 w-1.5 ${escapeHtml(g.color)} group-hover:w-2 transition-all"></div>
-
-                        <div class="flex items-center gap-5 pl-4 w-full md:w-auto min-w-0">
-                          <div class="relative shrink-0 flex items-center justify-center size-14 rounded-xl
-                                      bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10
-                                      text-slate-700 dark:text-slate-200
-                                      ${ok ? `${hoverBgCls} group-hover:text-white` : ""} transition-colors duration-300 shadow-soft">
-                            <span class="material-symbols-outlined text-[30px] group-hover:scale-110 transition-transform">
-                              ${escapeHtml(c.icon || "description")}
-                            </span>
-
-                            <div class="absolute -bottom-1 -right-1 bg-white dark:bg-slate-800 rounded-full p-0.5 border border-slate-200 dark:border-slate-600">
-                              <span class="block size-2.5 ${ok ? "bg-green-500" : "bg-slate-400"} rounded-full"></span>
-                            </div>
-                          </div>
-
-                          <div class="flex flex-col min-w-0">
-                            <h4 class="text-lg font-extrabold text-slate-800 dark:text-white tracking-tight truncate max-w-[780px]">
-                              ${escapeHtml(c.title)}
-                            </h4>
-
-                            <div class="flex items-center gap-2 mt-1 flex-wrap">
-                              <span class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-slate-100 dark:bg-white/5
-                                           text-slate-500 dark:text-slate-300 uppercase tracking-wider border border-slate-200 dark:border-white/10">
-                                ${escapeHtml(g.title)}
-                              </span>
-
-                              <p class="text-sm text-slate-500 dark:text-slate-400 font-medium truncate border-l border-slate-300 dark:border-slate-600 pl-2 max-w-[820px]">
-                                ${escapeHtml(c.desc || "")}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="mt-4 md:mt-0 w-full md:w-auto pl-4 md:pl-0 flex items-center justify-end">
-                          ${
-                            ok
-                            ? `<a href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer"
-                                 class="w-full md:w-auto flex items-center justify-center gap-2 rounded-xl
-                                        bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10
-                                        text-[#0f3460] dark:text-white
-                                        hover:text-white ${hoverBgCls} ${hoverBorderCls}
-                                        h-10 px-6 text-sm font-extrabold shadow-soft hover:shadow-card transition-all duration-200">
-                                  <span>TRUY CẬP</span>
-                                  <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                                </a>`
-                            : `<button type="button" disabled
-                                 class="w-full md:w-auto flex items-center justify-center gap-2 rounded-xl
-                                        bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10
-                                        text-slate-400 cursor-not-allowed h-10 px-6 text-sm font-extrabold">
-                                  <span>CHƯA CÓ LINK</span>
-                                  <span class="material-symbols-outlined text-[18px]">link_off</span>
-                                </button>`
-                          }
-                        </div>
-                      </div>
-                    `;
-                  }).join("")}
-
-                  ${children.length === 0 ? `
-                    <div class="text-sm text-slate-500 dark:text-slate-400 px-1 py-2">
-                      Không có file con phù hợp để hiển thị.
-                    </div>
-                  ` : ""}
+                <div>
+                    <h1 class="text-sm font-bold tracking-[0.2em] text-white uppercase">Ngành Trung Thế</h1>
+                    <p class="text-[10px] font-mono text-slate-500 tracking-widest uppercase">Hệ Thống File</p>
                 </div>
-              </div>
             </div>
-          `;
-        }).join("");
+            
+            <div class="flex items-center gap-4 bg-white/[0.02] border border-white/[0.05] rounded-full px-4 py-2 backdrop-blur-md">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse"></span>
+                    <span class="hidden sm:block text-[11px] text-slate-400 font-mono tracking-wider">ONLINE</span>
+                </div>
+                <div class="w-px h-4 bg-white/10"></div>
+                <div class="w-6 h-6 rounded-full bg-gradient-to-tr from-slate-700 to-slate-400 flex items-center justify-center">
+                    <i data-lucide="fingerprint" class="w-3 h-3 text-white"></i>
+                </div>
+            </div>
+        </header>
 
-      $("list").innerHTML = html || `
-        <div class="text-slate-500 dark:text-slate-400 p-6">
-          Không có kết quả phù hợp.
-        </div>
-      `;
+        <main class="flex-1 flex flex-col pb-24 relative">
+            
+            <!-- KHU VỰC TRANG CHỦ -->
+            <div id="home-view" class="transition-all duration-1000 ease-out opacity-100 scale-100 relative">
+                
+                <!-- 3. HERO & SEARCH TRUNG TÂM -->
+                <div id="hero-section" class="flex flex-col items-center text-center transition-all duration-1000 mb-20 mt-8">
+                    
+                    <div id="welcome-text" class="animate-in fade-in slide-in-from-bottom-8">
+                        <h2 id="greeting-text" class="text-5xl md:text-6xl lg:text-7xl font-extralight text-white tracking-tight mb-6">
+                            <!-- Chào buổi sáng/chiều/tối -->
+                        </h2>
+                        <p class="text-lg md:text-xl text-slate-400 font-light mb-12 tracking-wide max-w-2xl mx-auto">
+                            Không gian quản lý báo cáo, dữ liệu và quy trình chuẩn của khối sản xuất.
+                        </p>
+                    </div>
 
-      wireAccordion();
+                    <!-- Ô TÌM KIẾM CỰC QUANG (Aura Search) -->
+                    <div class="relative w-full max-w-3xl group z-30">
+                        <div class="absolute -inset-2 bg-gradient-to-r from-cyan-500/10 via-indigo-500/10 to-purple-500/10 rounded-[2.5rem] blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000"></div>
+                        <div class="relative flex items-center p-2.5 bg-white/[0.02] border border-white/[0.05] group-focus-within:border-white/20 backdrop-blur-[40px] backdrop-saturate-[150%] rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500">
+                            <div class="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.02] ml-2 shrink-0">
+                                <i data-lucide="search" class="w-6 h-6 text-slate-400 group-focus-within:text-white transition-colors"></i>
+                            </div>
+                            <input 
+                                type="text" 
+                                id="search-input"
+                                placeholder="Biểu nhập liệu, báo cáo , tính toán..." 
+                                class="w-full bg-transparent border-0 text-white placeholder-slate-600 text-xl py-4 pl-4 pr-6 focus:ring-0 outline-none font-light tracking-wide"
+                            >
+                            <button id="clear-search-btn" class="hidden mr-3 px-4 py-3 items-center gap-2 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-slate-300 hover:text-white transition-all shrink-0 text-sm font-medium">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i> Đóng
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-      if (query) {
-        DATA.filter(g => groupMatches(g, query)).forEach(g => setExpanded(g.id, true));
-      }
-    }
+                <!-- 4. KẾT QUẢ TÌM KIẾM -->
+                <div id="search-results-container" class="hidden max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8">
+                    <div class="bg-white/[0.02] backdrop-blur-[50px] backdrop-saturate-[150%] border border-white/[0.05] rounded-[2rem] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+                        <div id="search-results-list" class="space-y-2">
+                            <!-- Kết quả tìm kiếm sẽ được render bằng JS ở đây -->
+                        </div>
+                    </div>
+                </div>
 
-    function setExpanded(id, expanded) {
-      const panel = document.getElementById("panel-" + id);
-      const btn = document.querySelector(`[data-accordion="${CSS.escape(id)}"]`);
-      if (!panel || !btn) return;
+                <!-- 5. LƯỚI DANH MỤC Ở NGOÀI -->
+                <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-[1200px] mx-auto">
+                    <!-- Danh mục sẽ được render bằng JS ở đây -->
+                </div>
+            </div>
 
-      const icon = btn.querySelector(".material-symbols-outlined:last-child");
-      if (expanded) {
-        panel.classList.remove("hidden");
-        btn.setAttribute("aria-expanded", "true");
-        if (icon) icon.textContent = "expand_less";
-      } else {
-        panel.classList.add("hidden");
-        btn.setAttribute("aria-expanded", "false");
-        if (icon) icon.textContent = "expand_more";
-      }
-    }
+            <!-- =========================================================================
+                 6. MÀN HÌNH CHI TIẾT BÊN TRONG (SPLIT-PANE HOLOGRAPHIC) 
+                 ========================================================================= -->
+            <div id="detail-view" class="transition-all duration-1000 ease-in-out absolute inset-x-0 opacity-0 scale-105 pointer-events-none z-50">
+                <!-- Nội dung chi tiết sẽ được render bằng JS ở đây -->
+            </div>
 
-    function wireAccordion() {
-      document.querySelectorAll("[data-accordion]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-accordion");
-          const expanded = btn.getAttribute("aria-expanded") === "true";
-          setExpanded(id, !expanded);
+        </main>
+    </div>
 
-          const anyClosed = DATA.some(g => {
-            const b = document.querySelector(`[data-accordion="${CSS.escape(g.id)}"]`);
-            return b && b.getAttribute("aria-expanded") !== "true";
-          });
-          expandedAll = !anyClosed;
-          $("btnExpandAll").innerHTML = expandedAll
-            ? `<span class="material-symbols-outlined">unfold_less</span> Đóng hết`
-            : `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
+    <!-- DỮ LIỆU & LOGIC XỬ LÝ (JAVASCRIPT) -->
+    <script>
+        // Dữ liệu danh mục và file
+        const FILE_CATEGORIES = [
+            { 
+                id: 'baocao', 
+                colors: { main: 'orange', text: 'text-orange-300', glow: 'from-orange-500/30 via-orange-500/5 to-transparent', border: 'group-hover:border-orange-500/50', iconBg: 'bg-orange-500/10' },
+                iconName: 'file-text', iconColor: 'text-orange-300',
+                title: 'BÁO CÁO', 
+                desc: 'Xem kết quả sản xuất, tiến độ đơn hàng và tình hình chạy máy.', 
+                files: [
+                    { name: 'Báo Cáo Tiến Độ Sản Xuất', note: 'Theo dõi tổng quan tiến độ sản xuất (LSX) & sản lượng hàng ngày', url: 'https://docs.google.com/spreadsheets/d/1frC8tlVWaC0ID1VwoYoJC9pVF68oNsYJBZkunZHjNA0/edit?usp=sharing' },
+                    { name: 'Báo Cáo Hao Hụt Vật Tư', note: 'Thống kê hao hụt nhựa (máy 150-1)', url: 'https://docs.google.com/spreadsheets/d/1psZjAGlIrs1Lett0Pn9jEGlPJQpjrxzmmYib0rq3vro/edit?usp=drive_link' },
+                    { name: 'Nhật Ký Sự Cố Sản Xuất', note: 'Log dữ liệu dừng máy, sự cố sản xuất', url: 'https://docs.google.com/spreadsheets/d/1iglhTTQmQjEmm1k0GJlSKjFZ3RrG_xRrI41FNylNHPQ/edit?usp=drive_link' },
+                    { name: 'Báo Cáo Hiệu Suất (OEE)', note: 'Xem thời gian máy chạy & các khoảng thời gian phải dừng máy', url: '#' }
+                ] 
+            },
+            { 
+                id: 'nhaplieu', 
+                colors: { main: 'cyan', text: 'text-cyan-300', glow: 'from-cyan-500/30 via-cyan-500/5 to-transparent', border: 'group-hover:border-cyan-500/50', iconBg: 'bg-cyan-500/10' },
+                iconName: 'database', iconColor: 'text-cyan-300',
+                title: 'BIỂU NHẬP LIỆU', 
+                desc: 'Nơi cập nhật dữ liệu chạy máy của các máy', 
+                files: [
+                    { name: 'Nhập Liệu Kéo Xoắn', note: 'Ghi nhận dữ liệu & sản lượng ca công đoạn kéo xoắn', url: 'https://docs.google.com/spreadsheets/d/1x9RWzuJ_pX-DptP_MDOa5h0dRLjsNWXgPlimsByF71w/edit?usp=sharing' },
+                    { name: 'Nhập Liệu Bọc', note: 'Ghi nhận dữ liệu & sản lượng ca công đoạn bọc', url: 'https://docs.google.com/spreadsheets/d/173-VOqYWRt1a_AZ6ZKgBCsoieQhEJaAOTT6XWW1Xibk/edit?usp=sharing' },
+                    { name: 'Nhập Liệu CCVL', note: 'Ghi nhận dữ liệu & sản lượng ca công đoạn CCVL', url: 'https://docs.google.com/spreadsheets/d/1pY_dUEmiuWnaArQ4K0h7gsxyR-3QlNynWUf03fgkkwY/edit?usp=sharing' },
+                    { name: 'Giải Trình QTVT', note: 'Biểu ghi nhận & giải trình các vấn đề phát sinh trong công đoạn CCVL', url: 'https://docs.google.com/spreadsheets/d/1Gy1dMiSkyTACtj765kATRwQ1FXyiBX-IxvOzmzJWDHw/edit?usp=sharing' }
+                ] 
+            },
+            { 
+                id: 'tinhtoan', 
+                colors: { main: 'purple', text: 'text-purple-300', glow: 'from-purple-500/30 via-purple-500/5 to-transparent', border: 'group-hover:border-purple-500/50', iconBg: 'bg-purple-500/10' },
+                iconName: 'calculator', iconColor: 'text-purple-300',
+                title: 'CÔNG CỤ TÍNH TOÁN', 
+                desc: 'File tính nhanh', 
+                files: [
+                    { name: 'Dự Báo Thời Gian Tiến Độ', note: 'Công cụ tính toán dự kiến thời gian hoàn thành đơn hàng/LSX.', url: 'https://docs.google.com/spreadsheets/d/1B-qRiKjlEZw4nArUaG-joRzh5U1ZUuW_f5EXNFBuQLE/edit?usp=sharing' },
+                    { name: 'Tính Sức Chứa Ture', note: 'Tính toán sức chứa của ture & trọng lượng ture', url: 'https://docs.google.com/spreadsheets/d/1MnZ-QwGlFKC9L8kFWfntyOMCYbJwCnHejU9zJp61rU8/edit?usp=sharing' },
+                    { name: 'Quy Đổi Trọng Lượng & Chiều Dài', note: 'Tool quy đổi nhanh hệ số Kg ↔ Mét cho các dòng máy DRUM.', url: 'https://docs.google.com/spreadsheets/d/1w2sHeFpmBOFY2s_ewWX4iTYAOqivarST2GYQwI-Jyus/edit?usp=sharing' }
+                ] 
+            },
+            { 
+                id: 'nhansu', 
+                colors: { main: 'emerald', text: 'text-emerald-300', glow: 'from-emerald-500/30 via-emerald-500/5 to-transparent', border: 'group-hover:border-emerald-500/50', iconBg: 'bg-emerald-500/10' },
+                iconName: 'users', iconColor: 'text-emerald-300',
+                title: 'QUẢN LÝ NHÂN SỰ', 
+                desc: 'Theo dõi tình hình nhân sự', 
+                files: [
+                    { name: 'Danh Sách Nhân Sự', note: 'Chi tiết nhân sự của từng tổ', url: 'https://docs.google.com/spreadsheets/d/1IRFJuO6DXAPec66QtAcGtYAzpSO9_Xo_mSJ8fa5ORus/edit?usp=sharing' }
+                ] 
+            },
+            { 
+                id: 'dinhmuc', 
+                colors: { main: 'pink', text: 'text-pink-300', glow: 'from-pink-500/30 via-pink-500/5 to-transparent', border: 'group-hover:border-pink-500/50', iconBg: 'bg-pink-500/10' },
+                iconName: 'activity', iconColor: 'text-pink-300',
+                title: 'ĐỊNH MỨC SẢN XUẤT', 
+                desc: 'Bảng chỉ tiêu sản lượng máy', 
+                files: [
+                    { name: 'Định Mức Sản Lượng (Ca/Máy)', note: 'Bảng chỉ tiêu sản lượng chuẩn cho từng máy.', url: 'https://docs.google.com/spreadsheets/d/1RRSFQK7GocjevGYC-uYkkXwRenyN2U0qHXtx2B69I44/edit?usp=sharing' }
+                ] 
+            },
+            { 
+                id: 'tailieu', 
+                colors: { main: 'slate', text: 'text-slate-300', glow: 'from-slate-400/30 via-slate-400/5 to-transparent', border: 'group-hover:border-slate-400/50', iconBg: 'bg-slate-400/10' },
+                iconName: 'archive', iconColor: 'text-slate-300',
+                title: 'TÀI LIỆU & QUY TRÌNH', 
+                desc: 'Kho lưu các hướng dẫn làm việc, nội quy và biểu mẫu chung.', 
+                files: [
+                    { name: 'Hướng Dẫn Công Nghệ', note: 'Hướng dẫn chung & thông số kỹ thuật ngành Trung thế & Hạ thế', url: 'https://drive.google.com/drive/folders/10QPukkdvOz2zybUfnsM7n64OiT0ascqz?usp=sharing' },
+                    { name: 'Tài Liệu Nội Bộ', note: 'Hướng dẫn vận hành máy và các quy định của nhà máy', url: 'https://drive.google.com/drive/folders/1ZcukORZ2BSx71RL2ZUjxKoZ1GgmCiM1u?usp=sharing' },
+                    { name: 'Trung Tâm Liên Kết', note: 'Cổng Hub lưu trữ các đường link hệ thống', url: 'https://maivanthanh1405.github.io/portal-san-xuat/' }
+                ] 
+            }
+        ];
+
+        // Khởi tạo Lucide Icons
+        lucide.createIcons();
+
+        // Xử lý Lời Chào theo thời gian
+        const greetingEl = document.getElementById('greeting-text');
+        const hour = new Date().getHours();
+        if (hour < 12) greetingEl.textContent = 'Chào buổi sáng';
+        else if (hour < 18) greetingEl.textContent = 'Chào buổi chiều';
+        else greetingEl.textContent = 'Chào buổi tối';
+
+        // Tham chiếu DOM
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search-btn');
+        const welcomeText = document.getElementById('welcome-text');
+        const heroSection = document.getElementById('hero-section');
+        const categoriesGrid = document.getElementById('categories-grid');
+        const searchResultsContainer = document.getElementById('search-results-container');
+        const searchResultsList = document.getElementById('search-results-list');
+        const homeView = document.getElementById('home-view');
+        const detailView = document.getElementById('detail-view');
+
+        // Render Lưới Danh Mục Mặc Định
+        function renderCategories() {
+            categoriesGrid.innerHTML = '';
+            FILE_CATEGORIES.forEach((cat, idx) => {
+                const animDelay = idx * 100;
+                const buttonHTML = `
+                    <button
+                        onclick="openCategoryDetail('${cat.id}')"
+                        class="group relative text-left outline-none animate-in fade-in slide-in-from-bottom-12 h-full w-full"
+                        style="animation-delay: ${animDelay}ms; animation-fill-mode: both;"
+                    >
+                        <div class="absolute -inset-px rounded-[2.5rem] bg-gradient-to-br from-white/[0.05] to-transparent opacity-100 group-hover:opacity-0 transition-opacity duration-500"></div>
+                        <div class="absolute -inset-px rounded-[2.5rem] bg-gradient-to-br ${cat.colors.glow} opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        
+                        <div class="relative h-full bg-[#030508]/80 backdrop-blur-[60px] backdrop-saturate-[150%] rounded-[2.5rem] p-8 md:p-10 overflow-hidden flex flex-col">
+                            <div class="absolute -bottom-20 -right-20 w-64 h-64 ${cat.colors.iconBg} rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
+
+                            <div class="flex items-start justify-between mb-12 relative z-10">
+                                <div class="w-16 h-16 rounded-2xl ${cat.colors.iconBg} border border-white/[0.05] flex items-center justify-center group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 shadow-inner backdrop-blur-md">
+                                    <i data-lucide="${cat.iconName}" class="w-7 h-7 ${cat.iconColor}"></i>
+                                </div>
+                                <div class="w-10 h-10 rounded-full border border-white/[0.05] flex items-center justify-center text-slate-500 group-hover:bg-white/10 group-hover:text-white transition-all duration-500 bg-white/[0.01]">
+                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                                </div>
+                            </div>
+
+                            <div class="relative z-10 mt-auto">
+                                <h3 class="text-2xl font-semibold text-white/90 mb-2 tracking-wide group-hover:text-white transition-colors">${cat.title}</h3>
+                                <p class="text-base text-slate-400 font-light mb-6 opacity-80 leading-relaxed">${cat.desc}</p>
+                                
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="activity" class="w-4 h-4 text-slate-600 group-hover:text-slate-400 transition-colors"></i>
+                                    <span class="text-xs font-mono text-slate-600 group-hover:text-slate-400 transition-colors uppercase tracking-widest">
+                                        ${cat.files.length} TÀI LIỆU
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </button>
+                `;
+                categoriesGrid.insertAdjacentHTML('beforeend', buttonHTML);
+            });
+            lucide.createIcons(); // Re-initialize icons for newly added DOM
+        }
+
+        // Khởi tạo render lần đầu
+        renderCategories();
+
+        // Xử lý Tìm Kiếm
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim().toLowerCase();
+            
+            if (query) {
+                // UI Changes when searching
+                welcomeText.classList.add('hidden');
+                heroSection.classList.replace('mb-20', 'mb-10');
+                heroSection.classList.replace('mt-8', 'mt-0');
+                clearSearchBtn.classList.remove('hidden');
+                clearSearchBtn.classList.add('flex');
+                categoriesGrid.classList.add('hidden');
+                searchResultsContainer.classList.remove('hidden');
+
+                // Filter Logic
+                const results = FILE_CATEGORIES.flatMap(cat => 
+                    cat.files
+                    .filter(f => f.name.toLowerCase().includes(query) || f.note.toLowerCase().includes(query))
+                    .map(f => ({ ...f, categoryTitle: cat.title, colors: cat.colors, iconName: cat.iconName, iconColor: cat.iconColor }))
+                );
+
+                renderSearchResults(results);
+            } else {
+                clearSearch();
+            }
         });
-      });
-    }
 
-    /***********************
-     * 4) EVENTS
-     ***********************/
-    $("q").addEventListener("input", (e) => render(e.target.value));
+        clearSearchBtn.addEventListener('click', clearSearch);
 
-    let expandedAll = false;
+        function clearSearch() {
+            searchInput.value = '';
+            welcomeText.classList.remove('hidden');
+            heroSection.classList.replace('mb-10', 'mb-20');
+            heroSection.classList.replace('mt-0', 'mt-8');
+            clearSearchBtn.classList.add('hidden');
+            clearSearchBtn.classList.remove('flex');
+            categoriesGrid.classList.remove('hidden');
+            searchResultsContainer.classList.add('hidden');
+        }
 
-    $("btnExpandAll").addEventListener("click", () => {
-      expandedAll = !expandedAll;
-      DATA.forEach(g => setExpanded(g.id, expandedAll));
-      $("btnExpandAll").innerHTML = expandedAll
-        ? `<span class="material-symbols-outlined">unfold_less</span> Đóng hết`
-        : `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
-    });
+        function renderSearchResults(results) {
+            searchResultsList.innerHTML = '';
+            if (results.length === 0) {
+                searchResultsList.innerHTML = `
+                    <div class="py-20 text-center flex flex-col items-center">
+                        <div class="w-20 h-20 rounded-full bg-white/[0.02] border border-white/[0.05] flex items-center justify-center mb-6">
+                            <i data-lucide="archive" class="w-8 h-8 text-slate-600"></i>
+                        </div>
+                        <p class="text-slate-400 font-light text-lg">Hệ thống không tìm thấy tài liệu phù hợp.</p>
+                    </div>
+                `;
+            } else {
+                results.forEach(file => {
+                    const fileHTML = `
+                        <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-6 p-4 rounded-[1.5rem] bg-transparent hover:bg-white/[0.03] transition-all border border-transparent hover:border-white/[0.05] group relative overflow-hidden">
+                            <div class="w-14 h-14 rounded-full ${file.colors.iconBg} border border-white/[0.05] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500">
+                                <i data-lucide="${file.iconName}" class="w-7 h-7 ${file.iconColor}"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="font-medium text-slate-200 group-hover:text-white text-lg lg:text-xl truncate transition-colors tracking-wide">${file.name}</h4>
+                                <div class="flex items-center gap-3 mt-1 text-sm text-slate-500 font-light">
+                                    <span class="${file.colors.text} px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.05]">${file.categoryTitle}</span>
+                                    <span class="truncate opacity-70">${file.note}</span>
+                                </div>
+                            </div>
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center text-slate-500 group-hover:bg-white/10 group-hover:text-white transition-all shrink-0">
+                                <i data-lucide="arrow-right" class="w-5 h-5 -rotate-45"></i>
+                            </div>
+                        </a>
+                    `;
+                    searchResultsList.insertAdjacentHTML('beforeend', fileHTML);
+                });
+            }
+            lucide.createIcons();
+        }
 
-    $("btnClear").addEventListener("click", () => {
-      $("q").value = "";
-      render("");
-      $("q").focus();
+        // Biến lưu trữ Timeout để gỡ khóa chiều cao
+        let heightTimeout;
 
-      expandedAll = false;
-      $("btnExpandAll").innerHTML =
-        `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
-      DATA.forEach(g => setExpanded(g.id, false));
-    });
+        // Xử lý mở Màn hình Chi Tiết (Split Pane)
+        window.openCategoryDetail = function(categoryId) {
+            const category = FILE_CATEGORIES.find(c => c.id === categoryId);
+            if (!category) return;
 
-    $("btnTop").addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+            // [FIX] Khóa chiều cao hiện tại của trang để cuộn lên mượt mà không bị "giật cục"
+            const mainEl = document.querySelector('main');
+            clearTimeout(heightTimeout);
+            mainEl.style.minHeight = mainEl.offsetHeight + 'px';
+            
+            // Lệnh cuộn lướt nhẹ nhàng lên đỉnh màn hình
+            window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    /***********************
-     * 5) THEME
-     ***********************/
-    const THEME_KEY = "portal_theme";
-    function applyTheme(mode) {
-      if (mode === "dark") document.documentElement.classList.add("dark");
-      else document.documentElement.classList.remove("dark");
+            // Render Detail View
+            let filesHTML = '';
+            category.files.forEach(file => {
+                filesHTML += `
+                    <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-6 rounded-[2rem] bg-transparent hover:bg-white/[0.03] border border-transparent hover:border-white/[0.05] transition-all duration-500 group relative overflow-hidden cursor-pointer">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.02] to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
+                        
+                        <div class="flex items-center gap-6 relative z-10 min-w-0 flex-1">
+                            <div class="w-14 h-14 rounded-2xl bg-[#030508]/50 border border-white/[0.05] flex items-center justify-center ${category.colors.text} group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.05)] transition-all duration-500 shrink-0">
+                                <i data-lucide="file-text" class="w-6 h-6 opacity-80 group-hover:opacity-100"></i>
+                            </div>
+                            
+                            <div class="flex-1 min-w-0 pr-4">
+                                <h4 class="font-medium tracking-wide text-white/80 text-xl group-hover:text-white transition-colors truncate mb-1">
+                                    ${file.name}
+                                </h4>
+                                <p class="text-base text-slate-500 truncate font-light opacity-80 group-hover:opacity-100 transition-opacity">
+                                    ${file.note}
+                                </p>
+                            </div>
+                        </div>
 
-      document.documentElement.classList.toggle("light", mode !== "dark");
+                        <div class="flex items-center gap-4 relative z-10 shrink-0">
+                            <span class="text-sm font-light text-slate-300 tracking-widest opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500 hidden sm:block">
+                                MỞ FILE
+                            </span>
+                            <div class="w-14 h-14 rounded-full border border-white/[0.05] bg-[#030508]/50 group-hover:border-white/20 group-hover:bg-white/10 flex items-center justify-center text-slate-500 group-hover:text-white transition-all duration-500 shrink-0 shadow-sm group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                                <i data-lucide="arrow-right" class="w-5 h-5 -rotate-45"></i>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            });
 
-      $("themeIcon").textContent = (mode === "dark") ? "light_mode" : "dark_mode";
-      localStorage.setItem(THEME_KEY, mode);
-    }
-    $("btnTheme").addEventListener("click", () => {
-      const isDark = document.documentElement.classList.contains("dark");
-      applyTheme(isDark ? "light" : "dark");
-    });
+            detailView.innerHTML = `
+                <div class="w-full h-[85vh] max-h-[800px] flex flex-col lg:flex-row gap-6 relative animate-in fade-in zoom-in-95 duration-700">
+                    
+                    <!-- BẢNG TRÁI -->
+                    <div class="w-full lg:w-[38%] h-full rounded-[3rem] bg-[#030508]/60 backdrop-blur-[80px] backdrop-saturate-[200%] border border-white/[0.05] p-10 flex flex-col relative overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)]">
+                        
+                        <div class="absolute top-0 left-0 w-[150%] h-[150%] -translate-x-[20%] -translate-y-[20%] bg-gradient-to-br ${category.colors.glow} opacity-40 pointer-events-none"></div>
+                        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:32px_32px] opacity-50"></div>
 
-    (function init() {
-      const saved = localStorage.getItem(THEME_KEY);
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-      applyTheme(saved || (prefersDark ? "dark" : "light"));
+                        <button 
+                            onclick="closeCategoryDetail()"
+                            class="self-start flex items-center gap-3 text-slate-300 hover:text-white font-medium text-sm tracking-widest uppercase px-6 py-3.5 rounded-full bg-white/[0.05] border border-white/[0.1] hover:bg-white/[0.1] backdrop-blur-xl transition-all group relative z-20 shadow-lg"
+                        >
+                            <i data-lucide="chevron-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
+                            Trở Về
+                        </button>
 
-      render("");
-      DATA.forEach(g => setExpanded(g.id, false));
-      expandedAll = false;
-      $("btnExpandAll").innerHTML =
-        `<span class="material-symbols-outlined">unfold_more</span> Mở hết`;
-    })();
-  </script>
+                        <div class="mt-auto relative z-20 mb-8">
+                            <div class="relative mb-12 inline-block">
+                                <div class="absolute inset-0 bg-gradient-to-tr ${category.colors.glow} blur-2xl opacity-100 rounded-full scale-150"></div>
+                                <div class="w-28 h-28 rounded-[2rem] ${category.colors.iconBg} border border-white/[0.1] flex items-center justify-center relative z-10 backdrop-blur-md shadow-2xl">
+                                    <div class="scale-[2]">
+                                        <i data-lucide="${category.iconName}" class="w-7 h-7 ${category.iconColor}"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2 class="text-5xl font-light text-white tracking-tight mb-6 leading-tight">
+                                ${category.title}
+                            </h2>
+                            <p class="text-slate-300 font-light text-xl opacity-90 max-w-sm mb-10 leading-relaxed">
+                                ${category.desc}
+                            </p>
+                            
+                            <div class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-black/40 border border-white/[0.05] backdrop-blur-md">
+                                <i data-lucide="database" class="w-5 h-5 text-slate-400"></i>
+                                <span class="text-sm font-light text-slate-300 tracking-wide">${category.files.length} Dữ liệu khả dụng</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BẢNG PHẢI -->
+                    <div class="w-full lg:w-[62%] h-full rounded-[3rem] bg-white/[0.01] backdrop-blur-[30px] border border-white/[0.03] p-4 lg:p-6 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+                        <div class="px-8 py-6 flex items-center justify-between border-b border-white/[0.05] shrink-0">
+                            <span class="text-sm font-light tracking-[0.2em] text-slate-400 uppercase">Tài Liệu Chi Tiết</span>
+                            <i data-lucide="sparkles" class="w-5 h-5 text-slate-600"></i>
+                        </div>
+
+                        <div class="flex-1 overflow-y-auto px-4 py-4 space-y-3 custom-scrollbar pr-2">
+                            ${filesHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+
+            // Chuyển đổi View
+            homeView.classList.remove('opacity-100', 'scale-100', 'relative');
+            homeView.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'absolute', 'inset-0');
+            
+            detailView.classList.remove('opacity-0', 'scale-105', 'pointer-events-none', 'absolute', 'inset-x-0');
+            detailView.classList.add('opacity-100', 'scale-100', 'relative');
+
+            // [FIX] Mở khóa chiều cao khi animation xong
+            heightTimeout = setTimeout(() => {
+                mainEl.style.minHeight = '';
+            }, 1000);
+        };
+
+        window.closeCategoryDetail = function() {
+            // [FIX] Tương tự, khóa khung hình lúc cuộn ra ngoài
+            const mainEl = document.querySelector('main');
+            clearTimeout(heightTimeout);
+            mainEl.style.minHeight = mainEl.offsetHeight + 'px';
+
+            // Cuộn mượt mà lên đầu
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Chuyển đổi View
+            detailView.classList.remove('opacity-100', 'scale-100', 'relative');
+            detailView.classList.add('opacity-0', 'scale-105', 'pointer-events-none', 'absolute', 'inset-x-0');
+
+            homeView.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'absolute', 'inset-0');
+            homeView.classList.add('opacity-100', 'scale-100', 'relative');
+            
+            // [FIX] Mở khóa chiều cao
+            heightTimeout = setTimeout(() => {
+                mainEl.style.minHeight = '';
+            }, 1000);
+        };
+
+    </script>
 </body>
 </html>
