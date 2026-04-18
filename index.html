@@ -5,10 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ngành Trung Thế - Hệ Thống File</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Thêm thư viện Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* CSS cho các class động của Tailwind */
         @layer utilities {
             .animate-in {
                 animation: animate-in 1000ms cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -38,40 +36,32 @@
             to { transform: scale(1); opacity: 1; }
         }
         
-        /* Scrollbar toàn trang (Tùy chỉnh thanh cuộn trình duyệt) */
-        ::-webkit-scrollbar { width: 8px; }
+        /* Tùy chỉnh thanh cuộn */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #060B19; }
-        ::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.15);
-            border-radius: 9999px;
-        }
+        ::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.15); border-radius: 9999px; }
         ::-webkit-scrollbar-thumb:hover { background-color: rgba(255, 255, 255, 0.3); }
 
-        /* Scrollbar cho các thẻ con bên trong */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 9999px;
-        }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.1); border-radius: 9999px; }
         .custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
-<body class="min-h-screen bg-[#060B19] text-slate-200 font-sans relative overflow-x-hidden selection:bg-white/20">
+<body class="min-h-screen bg-[#060B19] text-slate-200 font-sans relative overflow-x-hidden selection:bg-white/20 flex flex-col">
 
     <!-- 1. MÔI TRƯỜNG KHÔNG GIAN (SPATIAL ENVIRONMENT) -->
     <div class="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-        <!-- Core Glow - Tăng độ sáng lên -->
+        <!-- Tăng độ sáng cho các khối màu nền (Glow Orbs) -->
         <div class="absolute top-[20%] left-[20%] w-[60vw] h-[60vw] rounded-full bg-indigo-600/20 blur-[150px] mix-blend-screen animate-[pulse_10s_ease-in-out_infinite]"></div>
         <div class="absolute bottom-[10%] right-[10%] w-[50vw] h-[50vw] rounded-full bg-cyan-600/15 blur-[120px] mix-blend-screen animate-[pulse_15s_ease-in-out_infinite_alternate]"></div>
-        <!-- Lưới tọa độ không gian -->
         <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
     </div>
 
-    <div class="relative z-10 max-w-[1400px] mx-auto px-6 md:px-12 flex flex-col min-h-screen">
+    <div class="relative z-10 max-w-[1200px] mx-auto px-6 md:px-12 flex flex-col min-h-screen w-full">
         
         <!-- 2. TOP BAR -->
-        <header class="py-8 flex justify-between items-center w-full mb-4 animate-in fade-in slide-in-from-top-4">
+        <header class="py-6 flex justify-between items-center w-full mb-2 animate-in fade-in slide-in-from-top-4">
             <div class="flex items-center gap-3 group cursor-pointer">
                 <div class="w-10 h-10 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center group-hover:bg-white/[0.15] transition-all shadow-[0_0_20px_rgba(255,255,255,0.02)]">
                     <i data-lucide="waves" class="w-5 h-5 text-white"></i>
@@ -83,9 +73,9 @@
             </div>
             
             <div class="flex items-center gap-4 bg-white/[0.04] border border-white/[0.1] rounded-full px-4 py-2 backdrop-blur-md">
-                <div class="flex items-center gap-2">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse"></span>
-                    <span class="hidden sm:block text-[11px] text-slate-300 font-mono tracking-wider">ONLINE</span>
+                <div class="flex items-center gap-2.5">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-emerald-400"></i>
+                    <span id="realtime-clock" class="text-[12px] text-white font-bold font-mono tracking-wider w-[60px] text-center">00:00:00</span>
                 </div>
                 <div class="w-px h-4 bg-white/20"></div>
                 <div class="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
@@ -94,71 +84,45 @@
             </div>
         </header>
 
-        <main class="flex-1 flex flex-col pb-24 relative">
+        <main class="flex-1 flex flex-col justify-center pb-10 pt-2 relative">
             
             <!-- KHU VỰC TRANG CHỦ -->
             <div id="home-view" class="transition-all duration-1000 ease-out opacity-100 scale-100 relative">
                 
-                <!-- 3. HERO & SEARCH TRUNG TÂM -->
-                <div id="hero-section" class="flex flex-col items-center text-center transition-all duration-1000 mb-20 mt-8">
-                    
+                <!-- 3. HERO TRUNG TÂM -->
+                <div id="hero-section" class="flex flex-col items-center text-center transition-all duration-1000 mb-10 mt-4">
                     <div id="welcome-text" class="animate-in fade-in slide-in-from-bottom-8">
-                        <h2 id="greeting-text" class="text-5xl md:text-6xl lg:text-7xl font-light text-white tracking-tight mb-6">
+                        <h2 id="greeting-text" class="text-4xl md:text-5xl lg:text-6xl font-light text-white tracking-tight mb-4">
                             <!-- Chào buổi sáng/chiều/tối -->
                         </h2>
-                        <p class="text-lg md:text-xl text-slate-300 font-light mb-12 tracking-wide max-w-2xl mx-auto opacity-90">
+                        <p class="text-base md:text-lg text-slate-300 font-light mb-8 tracking-wide max-w-2xl mx-auto opacity-90">
                             Không gian quản lý báo cáo, dữ liệu và quy trình chuẩn của khối sản xuất.
                         </p>
                     </div>
-
-                    <!-- Ô TÌM KIẾM CỰC QUANG (Aura Search) - Đã làm viền sáng hơn -->
-                    <div class="relative w-full max-w-3xl group z-30">
-                        <div class="absolute -inset-2 bg-gradient-to-r from-cyan-500/20 via-indigo-500/20 to-purple-500/20 rounded-[2.5rem] blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-1000"></div>
-                        <div class="relative flex items-center p-2.5 bg-white/[0.04] border border-white/[0.1] group-focus-within:border-white/30 group-focus-within:bg-white/[0.08] backdrop-blur-[40px] backdrop-saturate-[150%] rounded-[2.5rem] shadow-[0_8px_32px_rgba(0,0,0,0.4)] transition-all duration-500">
-                            <div class="w-14 h-14 flex items-center justify-center rounded-full bg-white/[0.02] ml-2 shrink-0">
-                                <i data-lucide="search" class="w-6 h-6 text-slate-400 group-focus-within:text-white transition-colors"></i>
-                            </div>
-                            <input 
-                                type="text" 
-                                id="search-input"
-                                placeholder="Biểu nhập liệu, báo cáo , tính toán..." 
-                                class="w-full bg-transparent border-0 text-white placeholder-slate-500 text-xl py-4 pl-4 pr-6 focus:ring-0 outline-none font-light tracking-wide"
-                            >
-                            <button id="clear-search-btn" class="hidden mr-3 px-4 py-3 items-center gap-2 rounded-full bg-white/[0.05] hover:bg-white/[0.15] text-slate-200 hover:text-white transition-all shrink-0 text-sm font-medium">
-                                <i data-lucide="chevron-left" class="w-4 h-4"></i> Đóng
-                            </button>
-                        </div>
-                    </div>
                 </div>
 
-                <!-- 4. KẾT QUẢ TÌM KIẾM -->
-                <div id="search-results-container" class="hidden max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8">
-                    <div class="bg-slate-900/60 backdrop-blur-[50px] backdrop-saturate-[150%] border border-white/[0.1] rounded-[2rem] p-4 shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
-                        <div id="search-results-list" class="space-y-2">
-                            <!-- Kết quả tìm kiếm sẽ được render bằng JS ở đây -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 5. LƯỚI DANH MỤC Ở NGOÀI -->
-                <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-[1200px] mx-auto">
+                <!-- 4. LƯỚI DANH MỤC Ở NGOÀI -->
+                <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
                     <!-- Danh mục sẽ được render bằng JS ở đây -->
                 </div>
             </div>
 
-            <!-- =========================================================================
-                 6. MÀN HÌNH CHI TIẾT BÊN TRONG (SPLIT-PANE HOLOGRAPHIC) 
-                 ========================================================================= -->
-            <div id="detail-view" class="transition-all duration-1000 ease-in-out absolute inset-x-0 opacity-0 scale-105 pointer-events-none z-50">
+            <!-- 5. MÀN HÌNH CHI TIẾT BÊN TRONG (SPLIT-PANE HOLOGRAPHIC) -->
+            <div id="detail-view" class="transition-all duration-700 ease-in-out absolute inset-x-0 opacity-0 scale-105 pointer-events-none z-50">
                 <!-- Nội dung chi tiết sẽ được render bằng JS ở đây -->
             </div>
 
         </main>
+
+        <footer class="py-6 border-t border-white/[0.05] flex justify-center opacity-60">
+            <p class="text-[10px] font-bold font-mono tracking-[0.4em] text-slate-500 uppercase">
+                © 2026 NGÀNH TRUNG THẾ <span class="mx-2 text-white/20">|</span> PHÁT TRIỂN BỞI: MAI VĂN THẠNH
+            </p>
+        </footer>
+
     </div>
 
-    <!-- DỮ LIỆU & LOGIC XỬ LÝ (JAVASCRIPT) -->
     <script>
-        // Dữ liệu danh mục và file
         const FILE_CATEGORIES = [
             { 
                 id: 'baocao', 
@@ -232,63 +196,66 @@
             }
         ];
 
-        // Khởi tạo Lucide Icons
         lucide.createIcons();
 
-        // Xử lý Lời Chào theo thời gian
+        // Xử lý Lời Chào thời gian thực
         const greetingEl = document.getElementById('greeting-text');
         const hour = new Date().getHours();
         if (hour < 12) greetingEl.textContent = 'Chào buổi sáng';
         else if (hour < 18) greetingEl.textContent = 'Chào buổi chiều';
         else greetingEl.textContent = 'Chào buổi tối';
 
-        // Tham chiếu DOM
-        const searchInput = document.getElementById('search-input');
-        const clearSearchBtn = document.getElementById('clear-search-btn');
-        const welcomeText = document.getElementById('welcome-text');
-        const heroSection = document.getElementById('hero-section');
+        // Xử lý Đồng hồ thời gian thực
+        const clockEl = document.getElementById('realtime-clock');
+        function updateClock() {
+            const now = new Date();
+            clockEl.textContent = now.toLocaleTimeString('vi-VN', { hour12: false });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
         const categoriesGrid = document.getElementById('categories-grid');
-        const searchResultsContainer = document.getElementById('search-results-container');
-        const searchResultsList = document.getElementById('search-results-list');
         const homeView = document.getElementById('home-view');
         const detailView = document.getElementById('detail-view');
 
-        // Render Lưới Danh Mục Mặc Định
+        // Hàm render giao diện trang chủ
         function renderCategories() {
             categoriesGrid.innerHTML = '';
             FILE_CATEGORIES.forEach((cat, idx) => {
                 const animDelay = idx * 100;
+                // Thêm class vision-container và cấu hình 3D Perspective
                 const buttonHTML = `
                     <button
                         onclick="openCategoryDetail('${cat.id}')"
-                        class="group relative text-left outline-none animate-in fade-in slide-in-from-bottom-12 h-full w-full"
-                        style="animation-delay: ${animDelay}ms; animation-fill-mode: both;"
+                        class="vision-container group relative text-left outline-none focus:outline-none animate-in fade-in slide-in-from-bottom-12 h-full w-full"
+                        style="animation-delay: ${animDelay}ms; animation-fill-mode: both; perspective: 1200px;"
                     >
-                        <!-- Thẻ danh mục: Đã chỉnh bóng đen (shadow) tỏa đều 4 hướng thay vì chỉ hắt xuống dưới -->
-                        <div class="relative h-full bg-slate-900/60 group-hover:bg-slate-800/80 border border-white/[0.08] group-hover:border-white/[0.3] transition-all duration-500 backdrop-blur-[60px] backdrop-saturate-[150%] rounded-[2.5rem] p-8 md:p-10 overflow-hidden flex flex-col shadow-lg group-hover:shadow-[0_0_50px_rgba(0,0,0,0.7)]">
+                        <!-- Thẻ VisionOS (transform-style: preserve-3d) -->
+                        <div class="vision-card relative h-full bg-slate-900/60 group-hover:bg-slate-800/80 border border-white/[0.08] group-hover:border-white/[0.3] backdrop-blur-[60px] backdrop-saturate-[150%] rounded-[2rem] p-6 md:p-8 overflow-hidden flex flex-col" style="transform-style: preserve-3d; transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
                             
-                            <!-- Bóng màu góc dưới phải -->
-                            <div class="absolute -bottom-20 -right-20 w-64 h-64 ${cat.colors.iconBg} rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
+                            <!-- Vệt cực quang đi theo chuột -->
+                            <div class="glow-orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[180%] ${cat.colors.iconBg} blur-[80px] opacity-0 pointer-events-none z-0"></div>
                             
-                            <!-- Bóng màu góc trên trái (MỚI THÊM) -->
-                            <div class="absolute -top-20 -left-20 w-64 h-64 ${cat.colors.iconBg} rounded-full blur-[80px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"></div>
+                            <!-- Cực quang nền mờ (Ambient) -->
+                            <div class="absolute inset-0 bg-gradient-to-br ${cat.colors.glow} opacity-0 group-hover:opacity-100 transition-all duration-700 pointer-events-none z-0"></div>
 
-                            <div class="flex items-start justify-between mb-12 relative z-10">
-                                <div class="w-16 h-16 rounded-2xl ${cat.colors.iconBg} border border-white/[0.1] flex items-center justify-center group-hover:scale-110 group-hover:-translate-y-2 transition-all duration-700 shadow-inner backdrop-blur-md">
+                            <!-- Đẩy các layer lên trên trục Z tạo chiều sâu 3D -->
+                            <div class="flex items-start justify-between mb-8 relative z-10" style="transform: translateZ(40px);">
+                                <div class="w-14 h-14 rounded-2xl ${cat.colors.iconBg} border border-white/[0.1] flex items-center justify-center shadow-inner backdrop-blur-md">
                                     <i data-lucide="${cat.iconName}" class="w-7 h-7 ${cat.iconColor}"></i>
                                 </div>
-                                <div class="w-10 h-10 rounded-full border border-white/[0.1] flex items-center justify-center text-slate-400 group-hover:bg-white/20 group-hover:text-white transition-all duration-500 bg-white/[0.03]">
+                                <div class="w-8 h-8 rounded-full border border-white/[0.1] flex items-center justify-center text-slate-400 bg-white/[0.03] group-hover:bg-white/20 group-hover:text-white transition-colors">
                                     <i data-lucide="arrow-right" class="w-4 h-4"></i>
                                 </div>
                             </div>
 
-                            <div class="relative z-10 mt-auto">
-                                <h3 class="text-2xl font-bold text-white/90 mb-2 tracking-wide group-hover:text-white transition-colors">${cat.title}</h3>
-                                <p class="text-base text-slate-300 font-normal mb-6 opacity-80 leading-relaxed">${cat.desc}</p>
+                            <div class="relative z-10 mt-auto" style="transform: translateZ(25px);">
+                                <h3 class="text-xl font-bold text-white/90 mb-2 tracking-wide group-hover:text-white transition-colors">${cat.title}</h3>
+                                <p class="text-sm text-slate-300 font-normal mb-5 opacity-80 leading-relaxed">${cat.desc}</p>
                                 
                                 <div class="flex items-center gap-2">
                                     <i data-lucide="activity" class="w-4 h-4 text-slate-500 group-hover:text-slate-300 transition-colors"></i>
-                                    <span class="text-xs font-bold font-mono text-slate-500 group-hover:text-slate-300 transition-colors uppercase tracking-widest">
+                                    <span class="text-[10px] font-bold font-mono text-slate-500 group-hover:text-slate-300 transition-colors uppercase tracking-widest">
                                         ${cat.files.length} TÀI LIỆU
                                     </span>
                                 </div>
@@ -298,132 +265,103 @@
                 `;
                 categoriesGrid.insertAdjacentHTML('beforeend', buttonHTML);
             });
-            lucide.createIcons(); // Re-initialize icons for newly added DOM
-        }
-
-        // Khởi tạo render lần đầu
-        renderCategories();
-
-        // Xử lý Tìm Kiếm
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim().toLowerCase();
-            
-            if (query) {
-                // UI Changes when searching
-                welcomeText.classList.add('hidden');
-                heroSection.classList.replace('mb-20', 'mb-10');
-                heroSection.classList.replace('mt-8', 'mt-0');
-                clearSearchBtn.classList.remove('hidden');
-                clearSearchBtn.classList.add('flex');
-                categoriesGrid.classList.add('hidden');
-                searchResultsContainer.classList.remove('hidden');
-
-                // Filter Logic
-                const results = FILE_CATEGORIES.flatMap(cat => 
-                    cat.files
-                    .filter(f => f.name.toLowerCase().includes(query) || f.note.toLowerCase().includes(query))
-                    .map(f => ({ ...f, categoryTitle: cat.title, colors: cat.colors, iconName: cat.iconName, iconColor: cat.iconColor }))
-                );
-
-                renderSearchResults(results);
-            } else {
-                clearSearch();
-            }
-        });
-
-        clearSearchBtn.addEventListener('click', clearSearch);
-
-        function clearSearch() {
-            searchInput.value = '';
-            welcomeText.classList.remove('hidden');
-            heroSection.classList.replace('mb-10', 'mb-20');
-            heroSection.classList.replace('mt-0', 'mt-8');
-            clearSearchBtn.classList.add('hidden');
-            clearSearchBtn.classList.remove('flex');
-            categoriesGrid.classList.remove('hidden');
-            searchResultsContainer.classList.add('hidden');
-        }
-
-        function renderSearchResults(results) {
-            searchResultsList.innerHTML = '';
-            if (results.length === 0) {
-                searchResultsList.innerHTML = `
-                    <div class="py-20 text-center flex flex-col items-center">
-                        <div class="w-20 h-20 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center mb-6">
-                            <i data-lucide="archive" class="w-8 h-8 text-slate-400"></i>
-                        </div>
-                        <p class="text-slate-300 font-light text-lg">Hệ thống không tìm thấy tài liệu phù hợp.</p>
-                    </div>
-                `;
-            } else {
-                results.forEach(file => {
-                    const fileHTML = `
-                        <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-6 p-5 rounded-[2rem] bg-white/[0.03] hover:bg-white/[0.1] transition-all border border-white/[0.05] hover:border-white/[0.25] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] group relative overflow-hidden">
-                            <div class="w-14 h-14 rounded-full ${file.colors.iconBg} border border-white/[0.1] flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500">
-                                <i data-lucide="${file.iconName}" class="w-7 h-7 ${file.iconColor}"></i>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h4 class="font-bold text-slate-200 group-hover:text-white text-lg lg:text-xl truncate transition-colors tracking-wide">${file.name}</h4>
-                                <div class="flex items-center gap-3 mt-1 text-sm text-slate-400 font-light">
-                                    <span class="${file.colors.text} px-3 py-1 rounded-md bg-white/[0.05] border border-white/[0.08] font-medium">${file.categoryTitle}</span>
-                                    <span class="truncate opacity-90">${file.note}</span>
-                                </div>
-                            </div>
-                            <div class="w-12 h-12 rounded-full flex items-center justify-center bg-white/[0.05] border border-white/[0.1] text-slate-400 group-hover:bg-white/20 group-hover:text-white transition-all shrink-0">
-                                <i data-lucide="arrow-right" class="w-5 h-5 -rotate-45"></i>
-                            </div>
-                        </a>
-                    `;
-                    searchResultsList.insertAdjacentHTML('beforeend', fileHTML);
-                });
-            }
             lucide.createIcons();
+            initVisionProEffect(); // Khởi chạy hiệu ứng
         }
 
-        // Biến lưu trữ Timeout để gỡ khóa chiều cao
-        let heightTimeout;
+        // Script chính tạo độ nghiêng 3D và Cực quang theo chuột
+        window.initVisionProEffect = function() {
+            const containers = document.querySelectorAll('.vision-container:not(.vision-init)');
+            containers.forEach(container => {
+                container.classList.add('vision-init'); // Tránh lặp sự kiện
+                const card = container.querySelector('.vision-card');
+                const orb = container.querySelector('.glow-orb');
+                if(!card) return;
+                
+                container.addEventListener('mousemove', (e) => {
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    // Tính góc nghiêng (Tối đa 6 độ)
+                    const rotateX = ((y - centerY) / centerY) * -6; 
+                    const rotateY = ((x - centerX) / centerX) * 6;
+                    
+                    // Phản hồi lập tức
+                    card.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
+                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+                    card.style.boxShadow = `0 30px 60px rgba(0,0,0,0.8)`;
+                    
+                    // Cực quang tracking chuột
+                    if(orb) {
+                        orb.style.transition = 'opacity 0.3s ease-out';
+                        orb.style.opacity = '0.8';
+                        orb.style.transform = `translate(calc(-50% + ${x - centerX}px), calc(-50% + ${y - centerY}px))`;
+                    }
+                });
+                
+                container.addEventListener('mouseleave', () => {
+                    // Trả về vị trí cũ cực êm ái
+                    card.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out';
+                    card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    card.style.boxShadow = `0 10px 30px rgba(0,0,0,0.2)`;
+                    
+                    if(orb) {
+                        orb.style.transition = 'transform 0.6s ease-out, opacity 0.6s ease-out';
+                        orb.style.opacity = '0';
+                        orb.style.transform = `translate(-50%, -50%)`;
+                    }
+                });
+            });
+        };
+
+        renderCategories();
 
         // Xử lý mở Màn hình Chi Tiết (Split Pane)
         window.openCategoryDetail = function(categoryId) {
             const category = FILE_CATEGORIES.find(c => c.id === categoryId);
             if (!category) return;
 
-            // [FIX] Khóa chiều cao hiện tại của trang để cuộn lên mượt mà không bị "giật cục"
-            const mainEl = document.querySelector('main');
-            clearTimeout(heightTimeout);
-            mainEl.style.minHeight = mainEl.offsetHeight + 'px';
-            
-            // Lệnh cuộn lướt nhẹ nhàng lên đỉnh màn hình
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // FIX KHỰNG: Dùng scrollTo tức thì
+            window.scrollTo(0, 0);
 
-            // Render Detail View
+            // Render Các File Chi Tiết có hỗ trợ 3D Hover
             let filesHTML = '';
             category.files.forEach(file => {
                 filesHTML += `
-                    <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between p-6 rounded-[2rem] bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.05] hover:border-white/[0.25] hover:shadow-[0_10px_30px_rgba(0,0,0,0.3)] transition-all duration-500 group relative overflow-hidden cursor-pointer">
-                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none"></div>
-                        
-                        <div class="flex items-center gap-6 relative z-10 min-w-0 flex-1">
-                            <div class="w-14 h-14 rounded-2xl bg-[#0B101E] border border-white/[0.1] flex items-center justify-center ${category.colors.text} group-hover:scale-110 group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)] transition-all duration-500 shrink-0">
-                                <i data-lucide="file-text" class="w-6 h-6 opacity-90 group-hover:opacity-100"></i>
-                            </div>
+                    <a href="${file.url}" target="_blank" rel="noopener noreferrer" class="vision-container group relative block w-full outline-none focus:outline-none" style="perspective: 1000px;">
+                        <div class="vision-card flex items-center justify-between p-5 rounded-[1.5rem] bg-white/[0.03] border border-white/[0.05] overflow-hidden cursor-pointer" style="transform-style: preserve-3d; transition: background-color 0.5s, border-color 0.5s, box-shadow 0.5s, transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);">
                             
-                            <div class="flex-1 min-w-0 pr-4">
-                                <h4 class="font-bold tracking-wide text-white/90 text-xl group-hover:text-white transition-colors truncate mb-1.5">
-                                    ${file.name}
-                                </h4>
-                                <p class="text-base text-slate-400 truncate font-normal opacity-90 group-hover:text-slate-300 transition-colors">
-                                    ${file.note}
-                                </p>
-                            </div>
-                        </div>
+                            <!-- Glow orb cho file -->
+                            <div class="glow-orb absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] ${category.colors.iconBg} blur-[60px] opacity-0 rounded-full pointer-events-none z-0"></div>
 
-                        <div class="flex items-center gap-5 relative z-10 shrink-0">
-                            <span class="text-sm font-medium text-slate-300 tracking-widest opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500 hidden sm:block">
-                                MỞ FILE
-                            </span>
-                            <div class="w-14 h-14 rounded-full border border-white/[0.1] bg-white/[0.02] group-hover:border-white/30 group-hover:bg-white/15 flex items-center justify-center text-slate-400 group-hover:text-white transition-all duration-500 shrink-0 shadow-sm group-hover:shadow-[0_0_20px_rgba(255,255,255,0.15)]">
-                                <i data-lucide="arrow-right" class="w-5 h-5 -rotate-45"></i>
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out pointer-events-none z-0"></div>
+                            
+                            <div class="flex items-center gap-5 relative z-10 min-w-0 flex-1" style="transform: translateZ(20px);">
+                                <div class="w-12 h-12 rounded-xl bg-[#0B101E] border border-white/[0.1] flex items-center justify-center ${category.colors.text} transition-colors shrink-0">
+                                    <i data-lucide="file-text" class="w-5 h-5 opacity-90"></i>
+                                </div>
+                                
+                                <div class="flex-1 min-w-0 pr-4">
+                                    <h4 class="font-bold tracking-wide text-white/90 text-lg truncate mb-1">
+                                        ${file.name}
+                                    </h4>
+                                    <p class="text-sm text-slate-400 truncate font-normal opacity-90">
+                                        ${file.note}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-4 relative z-10 shrink-0" style="transform: translateZ(30px);">
+                                <span class="text-xs font-medium text-slate-300 tracking-widest opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-500 hidden sm:block">
+                                    MỞ FILE
+                                </span>
+                                <div class="w-10 h-10 rounded-full border border-white/[0.1] bg-white/[0.02] flex items-center justify-center text-slate-400 transition-colors shrink-0">
+                                    <i data-lucide="arrow-right" class="w-4 h-4 -rotate-45"></i>
+                                </div>
                             </div>
                         </div>
                     </a>
@@ -431,54 +369,54 @@
             });
 
             detailView.innerHTML = `
-                <div class="w-full h-[85vh] max-h-[800px] flex flex-col lg:flex-row gap-6 relative animate-in fade-in zoom-in-95 duration-700">
+                <div class="w-full h-[80vh] max-h-[700px] flex flex-col lg:flex-row gap-5 relative animate-in fade-in zoom-in-95 duration-700">
                     
-                    <!-- BẢNG TRÁI (Làm nền sáng và viền rõ hơn) -->
-                    <div class="w-full lg:w-[38%] h-full rounded-[3rem] bg-[#0B101E]/80 backdrop-blur-[80px] backdrop-saturate-[200%] border border-white/[0.1] p-10 flex flex-col relative overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)]">
-                        
+                    <!-- BẢNG TRÁI -->
+                    <div class="w-full lg:w-[38%] h-full rounded-[2.5rem] bg-[#0B101E]/80 backdrop-blur-[80px] backdrop-saturate-[200%] border border-white/[0.1] p-8 flex flex-col relative overflow-hidden shadow-[0_0_80px_rgba(0,0,0,0.5)]">
                         <div class="absolute top-0 left-0 w-[150%] h-[150%] -translate-x-[20%] -translate-y-[20%] bg-gradient-to-br ${category.colors.glow} opacity-60 pointer-events-none"></div>
                         <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:32px_32px] opacity-60"></div>
 
                         <button 
                             onclick="closeCategoryDetail()"
-                            class="self-start flex items-center gap-3 text-slate-200 hover:text-white font-bold text-sm tracking-widest uppercase px-6 py-3.5 rounded-full bg-white/[0.08] border border-white/[0.15] hover:bg-white/[0.15] hover:border-white/[0.3] backdrop-blur-xl transition-all group relative z-20 shadow-lg"
+                            class="self-start flex items-center gap-2 text-slate-200 hover:text-white font-bold text-xs tracking-widest uppercase px-5 py-2.5 rounded-full bg-white/[0.08] border border-white/[0.15] hover:bg-white/[0.15] hover:border-white/[0.3] backdrop-blur-xl transition-all group relative z-20 shadow-lg"
                         >
                             <i data-lucide="chevron-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
                             Trở Về
                         </button>
 
-                        <div class="mt-auto relative z-20 mb-8">
-                            <div class="relative mb-12 inline-block">
+                        <div class="mt-auto relative z-20 mb-6">
+                            <div class="relative mb-8 inline-block">
                                 <div class="absolute inset-0 bg-gradient-to-tr ${category.colors.glow} blur-2xl opacity-100 rounded-full scale-150"></div>
-                                <div class="w-28 h-28 rounded-[2rem] ${category.colors.iconBg} border border-white/[0.15] flex items-center justify-center relative z-10 backdrop-blur-md shadow-2xl">
-                                    <div class="scale-[2]">
+                                <div class="w-24 h-24 rounded-[1.5rem] ${category.colors.iconBg} border border-white/[0.15] flex items-center justify-center relative z-10 backdrop-blur-md shadow-2xl">
+                                    <div class="scale-[1.5]">
                                         <i data-lucide="${category.iconName}" class="w-7 h-7 ${category.iconColor}"></i>
                                     </div>
                                 </div>
                             </div>
 
-                            <h2 class="text-5xl font-bold text-white tracking-tight mb-6 leading-tight">
+                            <h2 class="text-4xl font-bold text-white tracking-tight mb-4 leading-tight">
                                 ${category.title}
                             </h2>
-                            <p class="text-slate-300 font-normal text-xl opacity-90 max-w-sm mb-10 leading-relaxed">
+                            <p class="text-slate-300 font-normal text-lg opacity-90 max-w-sm mb-8 leading-relaxed">
                                 ${category.desc}
                             </p>
                             
-                            <div class="inline-flex items-center gap-3 px-5 py-3 rounded-2xl bg-black/40 border border-white/[0.1] backdrop-blur-md">
-                                <i data-lucide="database" class="w-5 h-5 text-slate-300"></i>
-                                <span class="text-sm font-medium text-slate-200 tracking-wide">${category.files.length} Dữ liệu khả dụng</span>
+                            <div class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-black/40 border border-white/[0.1] backdrop-blur-md">
+                                <i data-lucide="database" class="w-4 h-4 text-slate-300"></i>
+                                <span class="text-xs font-medium text-slate-200 tracking-wide">${category.files.length} Dữ liệu khả dụng</span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- BẢNG PHẢI (Danh sách file) -->
-                    <div class="w-full lg:w-[62%] h-full rounded-[3rem] bg-[#0B101E]/60 backdrop-blur-[30px] border border-white/[0.08] p-4 lg:p-6 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.3)]">
-                        <div class="px-8 py-6 flex items-center justify-between border-b border-white/[0.08] shrink-0">
-                            <span class="text-sm font-bold tracking-[0.2em] text-slate-300 uppercase">Tài Liệu Chi Tiết</span>
-                            <i data-lucide="sparkles" class="w-5 h-5 text-slate-400"></i>
+                    <!-- BẢNG PHẢI -->
+                    <div class="w-full lg:w-[62%] h-full rounded-[2.5rem] bg-[#0B101E]/60 backdrop-blur-[30px] border border-white/[0.08] p-4 lg:p-5 flex flex-col relative shadow-[0_0_50px_rgba(0,0,0,0.3)]">
+                        <div class="px-6 py-4 flex items-center justify-between border-b border-white/[0.08] shrink-0">
+                            <span class="text-xs font-bold tracking-[0.2em] text-slate-300 uppercase">Tài Liệu Chi Tiết</span>
+                            <i data-lucide="sparkles" class="w-4 h-4 text-slate-400"></i>
                         </div>
 
-                        <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 custom-scrollbar pr-2">
+                        <!-- FIX THANH CUỘN NGANG: Đã khóa overflow-x-hidden -->
+                        <div class="flex-1 overflow-y-auto overflow-x-hidden px-2 py-4 space-y-3 custom-scrollbar pr-2">
                             ${filesHTML}
                         </div>
                     </div>
@@ -486,39 +424,24 @@
             `;
             lucide.createIcons();
 
-            // Chuyển đổi View
+            // Chuyển đổi View tức thì không dùng setTimeout để tránh giật
             homeView.classList.remove('opacity-100', 'scale-100', 'relative');
             homeView.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'absolute', 'inset-0');
             
             detailView.classList.remove('opacity-0', 'scale-105', 'pointer-events-none', 'absolute', 'inset-x-0');
             detailView.classList.add('opacity-100', 'scale-100', 'relative');
-
-            // [FIX] Mở khóa chiều cao khi animation xong
-            heightTimeout = setTimeout(() => {
-                mainEl.style.minHeight = '';
-            }, 1000);
+            
+            initVisionProEffect(); // Gắn hiệu ứng 3D cho các thẻ File
         };
 
         window.closeCategoryDetail = function() {
-            // [FIX] Tương tự, khóa khung hình lúc cuộn ra ngoài
-            const mainEl = document.querySelector('main');
-            clearTimeout(heightTimeout);
-            mainEl.style.minHeight = mainEl.offsetHeight + 'px';
+            window.scrollTo(0, 0);
 
-            // Cuộn mượt mà lên đầu
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            // Chuyển đổi View
             detailView.classList.remove('opacity-100', 'scale-100', 'relative');
             detailView.classList.add('opacity-0', 'scale-105', 'pointer-events-none', 'absolute', 'inset-x-0');
 
             homeView.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'absolute', 'inset-0');
             homeView.classList.add('opacity-100', 'scale-100', 'relative');
-            
-            // [FIX] Mở khóa chiều cao
-            heightTimeout = setTimeout(() => {
-                mainEl.style.minHeight = '';
-            }, 1000);
         };
 
     </script>
