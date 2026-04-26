@@ -45,7 +45,7 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: rgba(34, 211, 238, 0.1); border-radius: 9999px; }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(34, 211, 238, 0.2); }
+        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body class="min-h-screen bg-[#020914] text-slate-200 font-sans relative overflow-x-hidden selection:bg-cyan-500/30 flex flex-col">
@@ -247,9 +247,9 @@
                     { name: 'PHIẾU KSQT MÁY BỌC 150-1', note: 'Phiếu kiểm soát vận hành máy bọc 150-1', url: 'https://docs.google.com/forms/d/e/1FAIpQLSel9SLhLviNwi1f1wFDDaKobLIJU9-vZvYMThE9Z2flSWBhNg/viewform' },
                     { name: 'PHIẾU KSQT MÁY KÉO', note: 'Phiếu kiểm soát vận hành máy kéo', url: 'https://forms.gle/u3aMjhcNHmDfXNAA7' },
                     { name: 'PHIẾU KSQT MÁY 61S', note: 'Phiếu kiểm soát vận hành máy 61S', url: '#' },
-                    { name: 'PHIẾU KSQT MÁY GB2', note: 'Phiếu kiểm soát vận hành máy GB2', url: '#' },
-                    { name: 'PHIẾU KSQT MÁY GB3', note: 'Phiếu kiểm soát vận hành máy GB3', url: '#' },
-                    { name: 'PHIẾU KSQT MÁY DRUM', note: 'Phiếu kiểm soát vận hành máy DRUM', url: '#' }
+                    { name: 'PHIẾU KSQT MÁY GB2', note: 'Phiếu kiểm soát vận hành máy GB2', url: 'https://forms.gle/LPcmUzyCyR5UbeEf6' },
+                    { name: 'PHIẾU KSQT MÁY GB3', note: 'Phiếu kiểm soát vận hành máy GB3', url: 'https://forms.gle/xCxmiZfw7h2jqbFw9' },
+                    { name: 'PHIẾU KSQT MÁY DRUM', note: 'Thư mục chứa phiếu máy DRUM (Xoắn nhóm & Giáp sợi)', isFolder: true, targetId: 'phieu_kiemsoat_drum', iconOverride: 'folder-open', colorOverride: 'text-rose-400' }
                 ]
             },
             {
@@ -257,7 +257,7 @@
                 hidden: true,
                 colors: { main: 'rose', text: 'text-rose-400', glow: 'from-rose-500/40 via-rose-500/10 to-transparent', border: 'group-hover:border-rose-500/50', iconBg: 'bg-rose-500/20' },
                 iconName: 'database', iconColor: 'text-rose-400',
-                title: 'LƯU TRỮ DỮ LIỆU KIỂM SOÁT',
+                title: 'DỮ LIỆU KIỂM SOÁT',
                 desc: 'Bảng dữ liệu ghi nhận thông số trong quá trình kiểm soát.',
                 files: [
                     { name: 'KIỂM SOÁT QUÁ TRÌNH BỌC 150-1', note: 'Dữ liệu vận hành máy bọc 150-1', url: 'https://drive.google.com/drive/folders/19RP6Jox2kOslXuO8x2HNNHByAdPFT7jJ?usp=sharing' },
@@ -265,7 +265,7 @@
                     { name: 'KIỂM SOÁT QUÁ TRÌNH MÁY 61S', note: 'Dữ liệu vận hành máy 61S', url: 'https://drive.google.com/drive/folders/1tbdoRLoRTmys-Cp8AzxJeF6sT6F-dtpE?usp=sharing' },
                     { name: 'KIỂM SOÁT QUÁ TRÌNH MÁY GB2', note: 'Dữ liệu vận hành máy GB2', url: 'https://drive.google.com/drive/folders/1M1eIo1pVe2COMK6PDOEujA6DX4L9ZHp-?usp=sharing' },
                     { name: 'KIỂM SOÁT QUÁ TRÌNH MÁY GB3', note: 'Dữ liệu vận hành máy GB3', url: 'https://drive.google.com/drive/folders/1a1UHpmiPqF4alKwijdSgcDt16LvOUETq?usp=sharing' },
-                    { name: 'KIỂM SOÁT QUÁ TRÌNH MÁY DRUM', note: 'Dữ liệu vận hành máy DRUM', url: 'https://drive.google.com/drive/folders/1SF1hidYncfxiiRQkunspfEHBFveyW_Do?usp=sharing' }
+                    { name: 'KIỂM SOÁT QUÁ TRÌNH MÁY DRUM', note: 'Thư mục chứa dữ liệu máy DRUM (Xoắn nhóm & Giáp sợi)', isFolder: true, targetId: 'dulieu_kiemsoat_drum', iconOverride: 'folder-open', colorOverride: 'text-rose-400' }
                 ]
             },
             {
@@ -277,11 +277,48 @@
                 desc: 'Biểu đồ trực quan quá trình vận hành của các máy.',
                 files: [
                     { name: 'BIỂU KSQT MÁY BỌC 150-1', note: 'Biểu kiểm soát quá trình máy bọc 150-1', url: 'https://docs.google.com/spreadsheets/d/1olZJecjUcmlB2al93OWUL_0-7oFzxr5v6W-Xhdc73x8/edit?usp=drive_link' },
-                    { name: 'BIỂU KSQT MÁY KÉO', note: 'Biểu kiểm soát quá trình máy kéo', url: 'https://docs.google.com/spreadsheets/d/1qw5rVsb5cpqu_XfzvSuHC3r-CYC-MHDpUe1cTFNEs3o/edit?usp=drive_link' },
+                    { name: 'BIỂU KSQT MÁY KÉO', note: 'Biểu kiểm soát quá trình máy kéo', url: 'https://docs.google.com/spreadsheets/d/1qw5rVsb5cpqu_XfzvSuHC3r-CYC-MHDpUe1cTFNEs3o/edit?usp=sharing' },
                     { name: 'BIỂU KSQT MÁY 61S', note: 'Biểu kiểm soát quá trình máy 61S', url: '#' },
-                    { name: 'BIỂU KSQT MÁY GB2', note: 'Biểu kiểm soát quá trình máy GB2', url: '#' },
-                    { name: 'BIỂU KSQT MÁY GB3', note: 'Biểu kiểm soát quá trình máy GB3', url: '#' },
-                    { name: 'BIỂU KSQT MÁY DRUM', note: 'Biểu kiểm soát quá trình máy DRUM', url: '#' }
+                    { name: 'BIỂU KSQT MÁY GB2', note: 'Biểu kiểm soát quá trình máy GB2', url: 'https://docs.google.com/spreadsheets/d/1MKi6ozky_08unLmSMGGTunbj6EIaWY-nbohA_EEEn7Y/edit?usp=sharing' },
+                    { name: 'BIỂU KSQT MÁY GB3', note: 'Biểu kiểm soát quá trình máy GB3', url: 'https://docs.google.com/spreadsheets/d/14z1Jj7LM8umDO21NH81YNvJMDepyp2AEsESvxYjLfa8/edit?usp=sharing' },
+                    { name: 'BIỂU KSQT MÁY DRUM', note: 'Thư mục chứa biểu đồ máy DRUM (Xoắn nhóm & Giáp sợi)', isFolder: true, targetId: 'bieu_kiemsoat_drum', iconOverride: 'folder-open', colorOverride: 'text-rose-400' }
+                ]
+            },
+            // ================== CÁC THƯ MỤC CẤP 3 DÀNH RIÊNG CHO MÁY DRUM ================== //
+            {
+                id: 'phieu_kiemsoat_drum',
+                hidden: true,
+                colors: { main: 'rose', text: 'text-rose-400', glow: 'from-rose-500/40 via-rose-500/10 to-transparent', border: 'group-hover:border-rose-500/50', iconBg: 'bg-rose-500/20' },
+                iconName: 'folder-open', iconColor: 'text-rose-400',
+                title: 'PHIẾU KSQT MÁY DRUM',
+                desc: 'Danh sách phiếu kiểm soát của máy DRUM.',
+                files: [
+                    { name: 'PHIẾU KSQT DRUM - XOẮN NHÓM', note: 'Phiếu kiểm soát vận hành máy DRUM công đoạn xoắn nhóm', url: 'https://forms.gle/71sCecVAhW6wbnRh6' },
+                    { name: 'PHIẾU KSQT DRUM - GIÁP SỢI', note: 'Phiếu kiểm soát vận hành máy DRUM công đoạn giáp sợi', url: 'https://forms.gle/eExp9GsMMFN3bbtx9' }
+                ]
+            },
+            {
+                id: 'dulieu_kiemsoat_drum',
+                hidden: true,
+                colors: { main: 'rose', text: 'text-rose-400', glow: 'from-rose-500/40 via-rose-500/10 to-transparent', border: 'group-hover:border-rose-500/50', iconBg: 'bg-rose-500/20' },
+                iconName: 'folder-open', iconColor: 'text-rose-400',
+                title: 'DỮ LIỆU KSQT MÁY DRUM',
+                desc: 'Dữ liệu ghi nhận thông số máy DRUM.',
+                files: [
+                    { name: 'DỮ LIỆU DRUM - XOẮN NHÓM', note: 'Dữ liệu vận hành máy DRUM xoắn nhóm', url: 'https://drive.google.com/drive/folders/1SF1hidYncfxiiRQkunspfEHBFveyW_Do?usp=sharing' },
+                    { name: 'DỮ LIỆU DRUM - GIÁP SỢI', note: 'Dữ liệu vận hành máy DRUM giáp sợi', url: 'https://drive.google.com/drive/folders/1SF1hidYncfxiiRQkunspfEHBFveyW_Do?usp=sharing' }
+                ]
+            },
+            {
+                id: 'bieu_kiemsoat_drum',
+                hidden: true,
+                colors: { main: 'rose', text: 'text-rose-400', glow: 'from-rose-500/40 via-rose-500/10 to-transparent', border: 'group-hover:border-rose-500/50', iconBg: 'bg-rose-500/20' },
+                iconName: 'folder-open', iconColor: 'text-rose-400',
+                title: 'BIỂU KSQT MÁY DRUM',
+                desc: 'Biểu đồ trực quan vận hành của máy DRUM.',
+                files: [
+                    { name: 'BIỂU KSQT MÁY DRUM - XOẮN NHÓM', note: 'Biểu kiếm soát quá trình máy DRUM xoắn nhóm', url: 'https://docs.google.com/spreadsheets/d/1dU1RK1T7c9HYTcouWyUbTHi0KiRD1SKpJgqWDScpXgg/edit?usp=sharing' },
+                    { name: 'BIỂU KSQT MÁY DRUM - GIÁP SỢI', note: 'Biểu kiểm soát quá trình máy DRUM giáp sợi', url: 'https://docs.google.com/spreadsheets/d/1VTZPlFKhEoQxk68G9YGFQV0EbknikCXR9bAKqpQcWsc/edit?usp=sharing' }
                 ]
             }
         ];
@@ -412,7 +449,7 @@
 
         let heightTimeout;
 
-        // Xử lý mở Màn hình Chi Tiết (có hỗ trợ sub-folder)
+        // Xử lý mở Màn hình Chi Tiết (có hỗ trợ sub-folder đa cấp)
         window.openCategoryDetail = function(categoryId, parentId = null) {
             const category = FILE_CATEGORIES.find(c => c.id === categoryId);
             if (!category) return;
