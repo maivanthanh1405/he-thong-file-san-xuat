@@ -1,30 +1,59 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ngành Trung Thế - Hệ Thống File</title>
+    <title>Ngành Trung Thế - Cổng Quản Lý Dữ Liệu Sản Xuất</title>
     
+    <!-- Google Fonts: Be Vietnam Pro & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
-    
+
     <script>
         tailwind.config = {
+            darkMode: 'class',
+            // hover: / group-hover: chỉ áp dụng trên thiết bị có chuột, để hiệu ứng không bị "dính" lại sau khi chạm trên màn hình cảm ứng
+            future: { hoverOnlyWhenSupported: true },
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
+                        sans: ['"Be Vietnam Pro"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
                     },
                     colors: {
-                        bgbody: '#0f172a', // slate-900
-                        cardbg: '#1e293b', // slate-800
-                        textmain: '#f8fafc', // slate-50
-                        textmuted: '#94a3b8', // slate-400
+                        dark: {
+                            950: '#03050a',
+                            900: '#070a12',
+                            850: '#0c101c',
+                            800: '#121727',
+                            700: '#1c243c',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 5s ease-in-out infinite',
+                        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+                        'scanline': 'scanline 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        },
+                        'glow-pulse': {
+                            '0%, 100%': { opacity: '0.4', transform: 'scale(1)' },
+                            '50%': { opacity: '0.8', transform: 'scale(1.08)' },
+                        },
+                        scanline: {
+                            '0%': { transform: 'translateY(-100%)' },
+                            '100%': { transform: 'translateY(1000%)' },
+                        }
                     }
                 }
             }
@@ -32,121 +61,523 @@
     </script>
 
     <style>
-        @layer utilities {
-            .animate-in { animation: animate-in 800ms cubic-bezier(0.16, 1, 0.3, 1) both; }
-            .fade-in { animation-name: fade-in; }
-            .slide-in-from-top-4 { animation-name: slide-in-from-top-4; }
-            .slide-in-from-bottom-8 { animation-name: slide-in-from-bottom-8; }
-            .slide-in-from-bottom-12 { animation-name: slide-in-from-bottom-12; }
-            .zoom-in-95 { animation-name: zoom-in-95; }
+        /* ==================== 3D SPATIAL & EMBOSSED NỔI KHỐI ==================== */
+        /* Tên gọi và thông số các hiệu ứng bên dưới đối chiếu theo từ điển namethatui.com
+           (Hover Highlight / Hover Lift / Cursor Spotlight, Easing, Focus Ring, Glassmorphism, Breadcrumbs…) */
+        :root {
+            --space-perspective: 1200px;
+
+            /* Easing: chuyển động giao diện gói trong 150–300ms; cái gì đi vào thì ease-out */
+            --ease-ui: cubic-bezier(0.4, 0, 0.2, 1);
+            --dur-highlight: 150ms;     /* hover highlight: đổi màu, lớp phủ sáng */
+            --dur-lift: 200ms;          /* hover lift: nhấc lên, bóng lớn hơn */
+            --dur-settle: 300ms;        /* trả về trạng thái thường, phần tử vào màn hình */
+            --focus-ring: #67e8f9;
         }
 
-        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slide-in-from-top-4 {
-            from { transform: translateY(-1rem); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes slide-in-from-bottom-8 {
-            from { transform: translateY(2rem); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes slide-in-from-bottom-12 {
-            from { transform: translateY(3rem); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes zoom-in-95 {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        /* Background caro mờ đặc trưng Dark Mode */
         body {
-            background-color: #0f172a;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #03050a;
+            color: #e2e8f0;
+            overflow-x: hidden;
         }
 
-        /* Tùy chỉnh thanh cuộn Dark Mode */
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 9999px; }
-        ::-webkit-scrollbar-thumb:hover { background-color: #475569; }
+        /* Focus Ring: vòng sáng chỉ hiện khi đi bằng bàn phím (:focus-visible), tương phản cao và tách khỏi phần tử */
+        :focus-visible {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 3px;
+        }
 
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #334155; border-radius: 9999px; }
-        .custom-scrollbar:hover::-webkit-scrollbar-thumb { background-color: #475569; }
+        /* Vào màn hình (Easing: phần tử đi vào thì ease-out, tối đa 300ms) */
+        @keyframes view-enter {
+            from { opacity: 0; transform: translateY(12px); }
+        }
+
+        @keyframes card-rise {
+            from { transform: translateY(12px); }
+        }
+
+        @keyframes card-fade {
+            from { opacity: 0; }
+        }
+
+        .view-enter {
+            animation: view-enter var(--dur-settle) ease-out backwards;
+        }
+
+        /* 3D Container & Perspective */
+        .volumetric-container {
+            perspective: var(--space-perspective);
+            /* Không đặt transform-style: preserve-3d ở đây: khi đó nửa thẻ nghiêng ra sau bị coi là nằm "phía sau" khung này,
+               chuột trúng khung thay vì thẻ → hào quang chớp tắt và nút bên trong thẻ không bấm được */
+
+            /* Thẻ phóng to / nghiêng khi hover không được tính vào vùng cuộn của khối cha
+               (nếu không, thanh cuộn bật ra rồi tắt và cả bố cục bị xô lệch mỗi lần rê chuột) */
+            contain: layout;
+
+            /* Các thẻ lần lượt trượt lên khi vào màn hình; --i là thứ tự của thẻ */
+            animation: card-rise var(--dur-settle) ease-out backwards;
+            animation-delay: calc(var(--i, 0) * 30ms);
+        }
+
+        /* Thẻ nhận focus bàn phím: vòng focus ôm theo bo góc của thẻ thay vì khung chữ nhật bên ngoài */
+        .volumetric-container:focus-visible {
+            outline: none;
+        }
+
+        .volumetric-container:focus-visible > .volumetric-card {
+            outline: 2px solid var(--focus-ring);
+            outline-offset: 4px;
+        }
+
+        /* Thẻ Nổi Khối Siêu Chiều (Volumetric 3D Glass Card) */
+        .volumetric-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(16, 22, 36, 0.78) 0%, rgba(9, 13, 22, 0.92) 100%);
+            backdrop-filter: blur(35px) saturate(210%);
+            -webkit-backdrop-filter: blur(35px) saturate(210%);
+            /* Lớp con lấy bo góc qua biến này chứ không dùng "inherit": với inherit, mỗi lần thẻ đổi transform
+               trình duyệt phải tính lại style của mọi phần tử con */
+            --card-radius: 1.85rem;
+            border-radius: var(--card-radius);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 1.5px 0 1px rgba(255, 255, 255, 0.22) inset,
+                0 -2px 3px 0 rgba(0, 0, 0, 0.75) inset,
+                0 20px 45px -12px rgba(0, 0, 0, 0.85),
+                0 0 0 1px rgba(0, 0, 0, 0.6);
+            transform-style: preserve-3d;
+            /* transform do JS điều khiển theo từng khung hình (init3DTiltPhysics) nên không đặt transition ở đây */
+            will-change: transform;
+            /* Thẻ kính chỉ mờ dần trên chính nó: làm mờ khối cha sẽ khiến backdrop-filter mất nền trong lúc chuyển */
+            animation: card-fade var(--dur-settle) ease-out backwards;
+            animation-delay: calc(var(--i, 0) * 30ms);
+        }
+
+        /* Hover Lift: trạng thái hover (viền sáng, bóng lớn và mềm hơn, hào quang màu) được vẽ sẵn trên một lớp riêng
+           và chỉ đổi opacity, nên trình duyệt không phải vẽ lại box-shadow của cả thẻ ở từng khung hình.
+           Độ trong 0.22 / 0.23 chồng lên viền và vệt sáng sẵn có của thẻ sẽ ra đúng 0.3 / 0.4. */
+        .volumetric-card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: var(--card-radius);
+            box-shadow:
+                0 2px 2px 1px rgba(255, 255, 255, 0.23) inset,
+                0 -2px 5px 0 rgba(0, 0, 0, 0.85) inset,
+                0 32px 70px -15px rgba(0, 0, 0, 0.95),
+                0 0 45px -5px var(--card-glow, rgba(59, 130, 246, 0.4));
+            opacity: 0;
+            transition: opacity var(--dur-settle) var(--ease-ui);
+            will-change: opacity;
+            pointer-events: none;
+        }
+
+        /* Đi bằng bàn phím tới thẻ nào thì thẻ đó cũng sáng lên như khi rê chuột */
+        .volumetric-container:focus-visible .volumetric-card::after {
+            opacity: 1;
+        }
+
+        /* Hộp Icon Nổi Khối 3D Chữ Nổi (Extruded 3D Icon Box) */
+        .icon-box-3d {
+            position: relative;
+            border-radius: 1.25rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transform: translateZ(46px);
+            transition: transform var(--dur-settle) var(--ease-ui);
+        }
+
+        /* Bóng của icon: hai lớp vẽ sẵn (thường / hover) chuyển qua lại bằng opacity, thay vì vẽ lại box-shadow từng khung hình */
+        .icon-box-3d::before,
+        .icon-box-3d::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 1px solid transparent;
+            border-radius: inherit;
+            z-index: -1;
+            pointer-events: none;
+            transition: opacity var(--dur-settle) var(--ease-ui);
+            will-change: opacity;
+        }
+
+        .icon-box-3d::before {
+            box-shadow:
+                0 1.5px 0 1px rgba(255, 255, 255, 0.4) inset,
+                0 -2px 3px rgba(0, 0, 0, 0.6) inset,
+                0 12px 26px -4px rgba(0, 0, 0, 0.7),
+                0 0 22px -2px var(--icon-glow);
+        }
+
+        .icon-box-3d::after {
+            box-shadow:
+                0 2px 0 1px rgba(255, 255, 255, 0.6) inset,
+                0 -2px 4px rgba(0, 0, 0, 0.7) inset,
+                0 18px 36px -5px rgba(0, 0, 0, 0.85),
+                0 0 35px 4px var(--icon-glow);
+            opacity: 0;
+        }
+
+        /* Lớp trang trí nằm trong thẻ, cắt theo bo góc (thay cho overflow-hidden đặt trên thẻ, vốn cắt luôn hào quang hover bên ngoài) */
+        .volumetric-clip {
+            position: absolute;
+            inset: 0;
+            border-radius: calc(var(--card-radius) - 1px);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        /* Cursor Spotlight (trước đây: Specular Light Shine): quầng sáng mềm mang màu danh mục chạy theo con trỏ
+           bên trong thẻ, đồng thời làm sáng đoạn viền gần con trỏ nhất.
+           Khung này là một mặt nạ đứng yên phủ cả viền thẻ: đúng 1px viền để lộ đĩa sáng 100%, phần lòng thẻ chỉ 30%
+           (hai lớp mặt nạ loại trừ nhau: lòng thẻ còn 1 − 0.7 = 0.3). */
+        .specular-shine {
+            position: absolute;
+            inset: -1px;
+            padding: 1px;
+            border-radius: var(--card-radius);
+            -webkit-mask: linear-gradient(rgba(0, 0, 0, 0.7) 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(rgba(0, 0, 0, 0.7) 0 0) content-box exclude, linear-gradient(#000 0 0);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity var(--dur-settle) var(--ease-ui);
+            z-index: 2;
+            will-change: opacity;
+        }
+
+        /* Đĩa sáng được vẽ sẵn một lần; JS chỉ ghi --mx / --my (theo pointermove) để dịch nó bằng transform,
+           nên di chuột không làm trình duyệt vẽ lại gì cả */
+        .specular-shine::before {
+            content: '';
+            position: absolute;
+            left: -240px;
+            top: -240px;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: radial-gradient(closest-side, var(--card-glow, rgba(59, 130, 246, 0.4)), transparent 70%);
+            /* màu danh mục ở độ đậm tối đa, pha chút trắng cho ra cảm giác "ánh sáng" (trình duyệt cũ dùng dòng dự phòng ở trên) */
+            background: radial-gradient(closest-side, color-mix(in srgb, rgb(from var(--card-glow, rgb(59 130 246)) r g b), white 18%), transparent 70%);
+            transform: translate3d(var(--mx, -999px), var(--my, -999px), 0);
+            will-change: transform;
+        }
+
+        /* Gờ nổi Huy Hiệu (Embossed Tactile Badge) — về vai trò là một Pill: nhãn trạng thái ngắn, không bấm được */
+        .embossed-badge {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.25) inset,
+                0 3px 8px rgba(0, 0, 0, 0.5);
+            transform: translateZ(30px);
+            white-space: nowrap;
+        }
+
+        /* Nút hành động nổi khối 3D */
+        .btn-3d {
+            position: relative;
+            isolation: isolate;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.3) inset,
+                0 -1.5px 2px rgba(0, 0, 0, 0.5) inset,
+                0 6px 16px rgba(0, 0, 0, 0.5);
+            transition: transform var(--dur-lift) var(--ease-ui),
+                        box-shadow var(--dur-lift) var(--ease-ui),
+                        border-color var(--dur-highlight) ease-out,
+                        background-color var(--dur-highlight) ease-out;
+        }
+
+        /* Hover Highlight (state layer): lớp phủ sáng hiện dần trong 150ms, thay cho việc đổi gradient đột ngột */
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            border-radius: inherit;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.04) 100%);
+            opacity: 0;
+            transition: opacity var(--dur-highlight) ease-out;
+            pointer-events: none;
+        }
+
+        /* Vùng bắt chuột nối dài xuống dưới: nút nhấc lên 2px mà con trỏ ở mép dưới không bị tuột ra ngoài (hết nhấp nháy) */
+        .btn-3d::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 100%;
+            height: 3px;
+        }
+
+        /* Breadcrumbs: dấu phân cách vẽ bằng CSS để trình đọc màn hình không đọc từng dấu "/" */
+        .breadcrumb li + li::before {
+            content: '/';
+            content: '/' / '';
+            color: rgba(148, 163, 184, 0.55);
+            font-weight: 400;
+        }
+
+        /* ==================== HOVER (chỉ cho thiết bị có chuột) ====================
+           Bọc trong @media (hover: hover): màn hình cảm ứng không có hover, không bọc thì hiệu ứng bị "dính" lại sau khi chạm.
+           Hover đặt trên khung đứng yên (.volumetric-container) chứ không đặt trên thẻ đang chuyển động,
+           nên trạng thái hover không chập chờn khi thẻ nhấc lên / nghiêng đi dưới con trỏ.
+           Chiều vào dùng ease-out và nhanh hơn chiều trả về. */
+        @media (hover: hover) {
+            /* Hover Lift */
+            .volumetric-container:hover .volumetric-card::after {
+                opacity: 1;
+                transition: opacity var(--dur-lift) ease-out;
+            }
+
+            .volumetric-container:hover .icon-box-3d {
+                transform: translateZ(60px) scale(1.08);
+                transition: transform var(--dur-lift) ease-out;
+            }
+
+            .volumetric-container:hover .icon-box-3d::before {
+                opacity: 0;
+                transition: opacity var(--dur-lift) ease-out;
+            }
+
+            .volumetric-container:hover .icon-box-3d::after {
+                opacity: 1;
+                transition: opacity var(--dur-lift) ease-out;
+            }
+
+            /* Cursor Spotlight */
+            .volumetric-container:hover .specular-shine {
+                opacity: 1;
+                transition: opacity var(--dur-lift) ease-out;
+            }
+
+            /* Hover Highlight + nhấc nhẹ của nút */
+            .btn-3d:hover {
+                border-color: rgba(255, 255, 255, 0.35);
+                transform: translateY(-2px);
+                box-shadow:
+                    0 1px 0 rgba(255, 255, 255, 0.45) inset,
+                    0 10px 22px rgba(0, 0, 0, 0.6);
+            }
+
+            .btn-3d:hover::before {
+                opacity: 1;
+            }
+
+            ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+        }
+
+        /* Nhấn xuống: đặt sau khối hover để thắng .btn-3d:hover khi vừa rê vừa nhấn */
+        .btn-3d:active {
+            transform: translateY(1px);
+            box-shadow:
+                0 1px 2px rgba(0, 0, 0, 0.8) inset,
+                0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Người dùng bật "giảm chuyển động" trong hệ điều hành: vẫn sáng lên / đổi màu, nhưng bỏ chuyển động trang trí */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-delay: 0s !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* Glassmorphism: phương án dự phòng khi người dùng tắt hiệu ứng trong suốt, hoặc trình duyệt không làm mờ nền được */
+        @media (prefers-reduced-transparency: reduce) {
+            .volumetric-card {
+                background: linear-gradient(135deg, #101624 0%, #090d16 100%);
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+            }
+        }
+
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .volumetric-card {
+                background: linear-gradient(135deg, rgba(16, 22, 36, 0.96) 0%, rgba(9, 13, 22, 0.98) 100%);
+            }
+        }
+
+        /* Scrollbar hiện đại */
+        ::-webkit-scrollbar { width: 7px; height: 7px; }
+        ::-webkit-scrollbar-track { background: rgba(3, 5, 10, 0.8); }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* Animation Keyframes */
+        @keyframes subtle-pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .animate-subtle-pulse {
+            animation: subtle-pulse 4s ease-in-out infinite;
+        }
     </style>
 </head>
-<body class="min-h-screen text-textmain font-sans relative overflow-x-hidden selection:bg-sky-500/30 flex flex-col">
+<body class="min-h-screen text-slate-100 relative selection:bg-cyan-500/20 selection:text-cyan-200 flex flex-col justify-between">
 
-    <div class="relative z-10 max-w-[1200px] mx-auto px-6 md:px-12 flex flex-col min-h-screen w-full">
+    <!-- Canvas Hạt Năng Lượng / Lưới Điện Động Không Gian (Interactive Particle Network) -->
+    <canvas id="energy-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Ánh Sáng Cực Quang & Không Gian Đa Chiều Nền -->
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute -top-[10%] -left-[10%] w-[55vw] h-[55vw] rounded-full bg-gradient-to-tr from-cyan-600/15 to-indigo-600/20 blur-[140px] mix-blend-screen animate-pulse-slow"></div>
+        <div class="absolute -bottom-[15%] -right-[10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-tl from-blue-600/15 to-purple-600/20 blur-[160px] mix-blend-screen animate-pulse-slow" style="animation-delay: 3s;"></div>
+        <div class="absolute top-[40%] right-[20%] w-[35vw] h-[35vw] rounded-full bg-emerald-600/10 blur-[130px] mix-blend-screen"></div>
+        <!-- Lưới Tọa Độ Công Nghệ Cao (Cyber Grid) -->
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_45%,#000_60%,transparent_100%)]"></div>
+    </div>
+
+    <!-- KHUNG CHÍNH (MAIN WRAPPER) -->
+    <div class="relative z-10 max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col min-h-screen">
         
-        <header class="py-6 flex justify-between items-center w-full mb-2 animate-in fade-in slide-in-from-top-4">
-            <div class="flex items-center gap-3">
-                <div class="bg-white/95 p-1.5 rounded-lg shadow-sm">
-                    <img src="https://i.postimg.cc/50fJx3Wb/2015-Logo-CADIVI-new.jpg" alt="Logo" class="w-[110px] h-auto object-contain pointer-events-none select-none">
-                </div>
-                <div class="flex flex-col justify-center ml-1">
-                    <h1 class="text-lg font-extrabold tracking-tight text-textmain leading-tight uppercase drop-shadow-md">NGÀNH TRUNG THẾ</h1>
-                    <p class="text-[10px] font-bold text-textmuted tracking-[0.2em] uppercase mt-0.5">Hệ Thống File</p>
-                </div>
-            </div>
+        <!-- ==================== HEADER CAO CẤP ==================== -->
+        <header class="py-5 flex flex-wrap justify-between items-center gap-4 border-b border-white/[0.06] backdrop-blur-sm">
             
-            <div class="flex items-center gap-4 bg-slate-800 border border-white/10 shadow-[0_4px_12px_-2px_rgba(0,0,0,0.5)] rounded-full px-5 py-2.5">
-                <div class="flex items-center gap-2.5">
-                    <i data-lucide="clock" class="w-4 h-4 text-sky-400"></i>
-                    <span id="realtime-clock" class="text-[13px] text-textmain font-bold font-mono tracking-wider w-[65px] text-center">00:00:00</span>
+            <!-- Logo & Thương Hiệu: liên kết thật, tới được bằng bàn phím và Enter để về trang chủ -->
+            <a href="#" onclick="backToHome(); return false;" aria-label="Ngành Trung Thế — về trang chủ" class="flex items-center gap-3.5 group rounded-2xl">
+                <div class="relative w-11 h-11 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/20 flex items-center justify-center overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.3)] transition-transform duration-300 group-hover:scale-105">
+                    <!-- Ảnh Logo gốc (logo.png), fallback sang logo CADIVI trực tuyến và fallback icon -->
+                    <img src="logo.png" alt="Logo" class="w-full h-full object-contain p-1.5 relative z-10 transition-transform group-hover:scale-110" onerror="this.onerror=null; this.src='https://i.postimg.cc/50fJx3Wb/2015-Logo-CADIVI-new.jpg'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.classList.remove('hidden');};" />
+                    <div class="hidden flex items-center justify-center text-cyan-400">
+                        <i data-lucide="zap" class="w-6 h-6 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)]"></i>
+                    </div>
+                    <!-- Ánh hào quang chạy xung quanh logo -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 via-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
-                <div class="w-px h-5 bg-slate-700"></div>
-                <div class="w-7 h-7 rounded-full bg-slate-700/50 border border-slate-600 flex items-center justify-center">
-                    <i data-lucide="fingerprint" class="w-3.5 h-3.5 text-slate-400"></i>
+
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-base sm:text-lg font-black tracking-[0.2em] uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
+                            Ngành Trung Thế
+                        </h1>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold font-mono tracking-wider whitespace-nowrap bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                            PRO 2.0
+                        </span>
+                    </div>
+                    <p class="text-[11px] font-mono font-medium text-slate-400 tracking-wider flex items-center gap-1.5 mt-0.5">
+                        <!-- Status Dot: lõi đặc đứng yên, vòng lan toả (ping halo) nằm phía sau — không để chính chấm tròn mờ đi -->
+                        <span class="relative flex w-1.5 h-1.5" aria-hidden="true">
+                            <span class="absolute inset-0 rounded-full bg-emerald-400 opacity-75 motion-safe:animate-ping"></span>
+                            <span class="relative w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        </span>
+                        CỔNG TRUY CẬP DỮ LIỆU SẢN XUẤT
+                    </p>
                 </div>
+            </a>
+
+            <!-- Thanh Trạng Thái & Tiện Ích Đa Năng -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                
+                <!-- Huy hiệu Ca Sản Xuất (Tự động tính theo giờ thực tế) -->
+                <div id="shift-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.1] backdrop-blur-md text-xs font-mono">
+                    <span class="relative flex w-2 h-2" aria-hidden="true">
+                        <span class="absolute inset-0 rounded-full bg-amber-400 opacity-75 motion-safe:animate-ping"></span>
+                        <span class="relative w-2 h-2 rounded-full bg-amber-400"></span>
+                    </span>
+                    <span id="shift-text" class="text-slate-300 font-semibold whitespace-nowrap">Đang tải ca...</span>
+                </div>
+
+                <!-- Đồng Hồ Điện Tử Thời Gian Thực & Ngày -->
+                <div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.12] backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-cyan-400"></i>
+                    <span id="realtime-clock" class="text-xs font-mono font-bold tracking-widest text-white">00:00:00</span>
+                    <span class="w-px h-3 bg-white/20 hidden md:block"></span>
+                    <span id="realtime-date" class="text-[11px] font-mono text-slate-400 hidden md:block">02/10/2026</span>
+                </div>
+
             </div>
+
         </header>
 
-        <main class="flex-1 flex flex-col justify-center pb-10 pt-2 relative">
+        <!-- ==================== PHẦN THÂN GIAO DIỆN (MAIN CONTENT) ==================== -->
+        <main class="flex-1 flex flex-col justify-center py-6 sm:py-8 relative">
             
-            <div id="home-view" class="transition-all duration-700 ease-out opacity-100 scale-100 relative">
+            <!-- ==================== 1. HOME VIEW (TRANG CHÍNH CÁC KHỐI THẺ) ==================== -->
+            <div id="home-view" class="relative">
                 
-                <div id="hero-section" class="flex flex-col items-center text-center transition-all duration-700 mb-10 mt-4">
-                    <div id="welcome-text" class="animate-in fade-in slide-in-from-bottom-8">
-                        <h2 id="greeting-text" class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-textmain tracking-tight mb-4 drop-shadow-sm">
-                            </h2>
-                        <p class="text-base md:text-lg text-textmuted font-medium mb-8 tracking-wide max-w-2xl mx-auto">
-                            Không gian quản lý báo cáo, dữ liệu và quy trình chuẩn của khối sản xuất.
-                        </p>
+                <!-- Hero Section & Lời Chào -->
+                <div class="view-enter text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-mono font-medium mb-3">
+                        <i data-lucide="sparkle" class="w-3.5 h-3.5 animate-spin" style="animation-duration: 6s;"></i>
+                        <span>KHÔNG GIAN LÀM VIỆC SỐ • NGÀNH TRUNG THẾ</span>
                     </div>
+
+                    <h2 id="greeting-text" class="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight mb-3 bg-clip-text text-transparent bg-gradient-to-b from-white via-slate-100 to-slate-400">
+                        Chào buổi sáng
+                    </h2>
+
+                    <p class="text-sm sm:text-base text-slate-300 font-normal leading-relaxed max-w-2xl mx-auto">
+                        Không gian quản lý báo cáo, dữ liệu sản xuất và quy trình chuẩn của khối kỹ thuật.
+                    </p>
                 </div>
 
-                <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mx-auto">
-                    </div>
+                <!-- LƯỚI CÁC THẺ 3D NỔI KHỐI (RENDER ĐỘNG TỪ CSDL FILE_CATEGORIES) -->
+                <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full max-w-7xl mx-auto">
+                    <!-- Được tiêm tự động bởi hàm renderCategories() -->
+                </div>
+
             </div>
 
-            <div id="detail-view" class="transition-all duration-500 ease-in-out absolute inset-x-0 opacity-0 scale-105 pointer-events-none z-50">
-                </div>
+            <!-- ==================== 2. DETAIL VIEW (GIAO DIỆN XEM CHI TIẾT TÀI LIỆU) ==================== -->
+            <div id="detail-view" class="hidden w-full z-50">
+                <!-- Nội dung được tiêm động qua JavaScript với hiệu ứng 3D siêu thực -->
+            </div>
 
         </main>
 
-        <footer class="py-6 flex justify-center opacity-70">
-            <p class="text-[10px] font-bold font-mono tracking-[0.2em] text-slate-500 uppercase">
-                © 2026 NGÀNH TRUNG THẾ <span class="mx-2 text-slate-600">|</span> PHÁT TRIỂN BỞI: MAI VĂN THẠNH
+        <!-- ==================== FOOTER ==================== -->
+        <footer class="py-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span class="font-mono text-slate-300 tracking-wider font-semibold">HỆ THỐNG TRỰC TUYẾN</span>
+                <span class="text-slate-600" aria-hidden="true">|</span>
+                <span class="font-mono text-slate-400">PHIÊN BẢN 2026.10</span>
+            </div>
+
+            <p class="font-mono tracking-[0.25em] text-slate-400 uppercase text-center text-[11px]">
+                © 2026 NGÀNH TRUNG THẾ <span class="mx-2 text-white/20" aria-hidden="true">•</span> PHÁT TRIỂN BỞI: <strong class="text-slate-200">MAI VĂN THẠNH</strong>
             </p>
+
+            <div class="flex items-center gap-4 text-[11px] font-mono">
+                <span class="text-slate-400">BẢO MẬT NỘI BỘ</span>
+            </div>
         </footer>
 
     </div>
 
+    <!-- ==================== SCRIPTS LOGIC & HIỆU ỨNG TƯƠNG TÁC ==================== -->
     <script>
-        // Data đã được điều chỉnh color map theo chuẩn Dark Mode
+        // ==================== CƠ SỞ DỮ LIỆU ĐẦY ĐỦ CỦA TOÀN BỘ HỆ THỐNG FILE ====================
         const FILE_CATEGORIES = [
             { 
                 id: 'baocao', 
-                colors: { bg: 'bg-orange-500/20', text: 'text-orange-400', glow: 'rgba(249,115,22,0.2)' },
-                iconName: 'file-text', 
                 title: 'BÁO CÁO', 
                 desc: 'Xem kết quả sản xuất, tiến độ đơn hàng và tình hình chạy máy.', 
+                iconName: 'file-text', 
+                badgeText: '5 BÁO CÁO',
+                glow: 'rgba(249, 115, 22, 0.45)',
+                iconGlow: 'rgba(251, 146, 60, 0.6)',
+                colors: {
+                    text: 'text-orange-400',
+                    glow: 'from-orange-500/40 via-orange-500/10 to-transparent',
+                    bg: 'bg-orange-500/20',
+                    border: 'border-orange-500/30'
+                },
                 files: [
                     { name: 'Báo Cáo Tiến Độ Sản Xuất', note: 'Theo dõi tổng quan tiến độ sản xuất (LSX) & sản lượng hàng ngày', url: 'https://docs.google.com/spreadsheets/d/1frC8tlVWaC0ID1VwoYoJC9pVF68oNsYJBZkunZHjNA0/edit?usp=sharing' },
                     { name: 'Báo Cáo Thứ Tự Ưu Tiên', note: 'Theo dõi thứ tự ưu tiên xử lý các đơn hàng/LSX', url: 'https://thutu.netlify.app/' },
@@ -157,10 +588,18 @@
             },
             { 
                 id: 'nhaplieu', 
-                colors: { bg: 'bg-cyan-500/20', text: 'text-cyan-400', glow: 'rgba(6,182,212,0.2)' },
-                iconName: 'database', 
                 title: 'BIỂU NHẬP LIỆU', 
-                desc: 'Nơi cập nhật dữ liệu chạy máy của các máy', 
+                desc: 'Nơi cập nhật dữ liệu chạy máy và sản lượng của các máy.', 
+                iconName: 'database', 
+                badgeText: '4 BIỂU MẪU',
+                glow: 'rgba(6, 182, 212, 0.45)',
+                iconGlow: 'rgba(34, 211, 238, 0.6)',
+                colors: {
+                    text: 'text-cyan-400',
+                    glow: 'from-cyan-500/40 via-cyan-500/10 to-transparent',
+                    bg: 'bg-cyan-500/20',
+                    border: 'border-cyan-500/30'
+                },
                 files: [
                     { name: 'Nhập Liệu Kéo Xoắn', note: 'Ghi nhận dữ liệu & sản lượng ca công đoạn kéo xoắn', url: 'https://docs.google.com/spreadsheets/d/1x9RWzuJ_pX-DptP_MDOa5h0dRLjsNWXgPlimsByF71w/edit?usp=sharing' },
                     { name: 'Nhập Liệu Bọc', note: 'Ghi nhận dữ liệu & sản lượng ca công đoạn bọc', url: 'https://docs.google.com/spreadsheets/d/173-VOqYWRt1a_AZ6ZKgBCsoieQhEJaAOTT6XWW1Xibk/edit?usp=sharing' },
@@ -170,10 +609,18 @@
             },
             { 
                 id: 'tinhtoan', 
-                colors: { bg: 'bg-violet-500/20', text: 'text-violet-400', glow: 'rgba(139,92,246,0.2)' },
-                iconName: 'calculator', 
                 title: 'CÔNG CỤ TÍNH TOÁN', 
-                desc: 'File tính nhanh', 
+                desc: 'File tính nhanh dự báo tiến độ, sức chứa ture và quy đổi.', 
+                iconName: 'calculator', 
+                badgeText: '3 CÔNG CỤ',
+                glow: 'rgba(139, 92, 246, 0.45)',
+                iconGlow: 'rgba(167, 139, 250, 0.6)',
+                colors: {
+                    text: 'text-violet-400',
+                    glow: 'from-violet-500/40 via-violet-500/10 to-transparent',
+                    bg: 'bg-violet-500/20',
+                    border: 'border-violet-500/30'
+                },
                 files: [
                     { name: 'Dự Báo Thời Gian Tiến Độ', note: 'Công cụ tính toán dự kiến thời gian hoàn thành đơn hàng/LSX.', url: 'https://docs.google.com/spreadsheets/d/1B-qRiKjlEZw4nArUaG-joRzh5U1ZUuW_f5EXNFBuQLE/edit?usp=sharing' },
                     { name: 'Tính Sức Chứa Ture', note: 'Tính toán sức chứa của ture & trọng lượng ture', url: 'https://docs.google.com/spreadsheets/d/1MnZ-QwGlFKC9L8kFWfntyOMCYbJwCnHejU9zJp61rU8/edit?usp=sharing' },
@@ -182,42 +629,74 @@
             },
             { 
                 id: 'nhansu', 
-                colors: { bg: 'bg-emerald-500/20', text: 'text-emerald-400', glow: 'rgba(16,185,129,0.2)' },
-                iconName: 'users', 
                 title: 'QUẢN LÝ NHÂN SỰ', 
-                desc: 'Theo dõi tình hình nhân sự', 
+                desc: 'Theo dõi tình hình bố trí và danh sách nhân sự các tổ.', 
+                iconName: 'users', 
+                badgeText: '1 DANH SÁCH',
+                glow: 'rgba(16, 185, 129, 0.45)',
+                iconGlow: 'rgba(52, 211, 153, 0.6)',
+                colors: {
+                    text: 'text-emerald-400',
+                    glow: 'from-emerald-500/40 via-emerald-500/10 to-transparent',
+                    bg: 'bg-emerald-500/20',
+                    border: 'border-emerald-500/30'
+                },
                 files: [
-                    { name: 'Danh Sách Nhân Sự', note: 'Chi tiết nhân sự của từng tổ', url: 'https://docs.google.com/spreadsheets/d/1IRFJuO6DXAPec66QtAcGtYAzpSO9_Xo_mSJ8fa5ORus/edit?usp=sharing' }
+                    { name: 'Danh Sách Nhân Sự', note: 'Chi tiết nhân sự của từng tổ sản xuất', url: 'https://docs.google.com/spreadsheets/d/1IRFJuO6DXAPec66QtAcGtYAzpSO9_Xo_mSJ8fa5ORus/edit?usp=sharing' }
                 ] 
             },
             { 
                 id: 'dinhmuc', 
-                colors: { bg: 'bg-pink-500/20', text: 'text-pink-400', glow: 'rgba(236,72,153,0.2)' },
-                iconName: 'activity', 
                 title: 'ĐỊNH MỨC SẢN XUẤT', 
-                desc: 'Bảng chỉ tiêu sản lượng máy', 
+                desc: 'Bảng chỉ tiêu và định mức sản lượng chuẩn theo ca / máy.', 
+                iconName: 'activity', 
+                badgeText: '1 ĐỊNH MỨC',
+                glow: 'rgba(236, 72, 153, 0.45)',
+                iconGlow: 'rgba(244, 114, 182, 0.6)',
+                colors: {
+                    text: 'text-pink-400',
+                    glow: 'from-pink-500/40 via-pink-500/10 to-transparent',
+                    bg: 'bg-pink-500/20',
+                    border: 'border-pink-500/30'
+                },
                 files: [
                     { name: 'Định Mức Sản Lượng (Ca/Máy)', note: 'Bảng chỉ tiêu sản lượng chuẩn cho từng máy.', url: 'https://docs.google.com/spreadsheets/d/1RRSFQK7GocjevGYC-uYkkXwRenyN2U0qHXtx2B69I44/edit?usp=sharing' }
                 ] 
             },
             { 
                 id: 'tailieu', 
-                colors: { bg: 'bg-slate-600/30', text: 'text-slate-300', glow: 'rgba(148,163,184,0.15)' },
-                iconName: 'archive', 
                 title: 'TÀI LIỆU & QUY TRÌNH', 
                 desc: 'Kho lưu các hướng dẫn làm việc, nội quy và biểu mẫu chung.', 
+                iconName: 'book-open', 
+                badgeText: '3 MỤC QUY TRÌNH',
+                glow: 'rgba(59, 130, 246, 0.45)',
+                iconGlow: 'rgba(96, 165, 250, 0.6)',
+                colors: {
+                    text: 'text-blue-400',
+                    glow: 'from-blue-500/40 via-blue-500/10 to-transparent',
+                    bg: 'bg-blue-500/20',
+                    border: 'border-blue-500/30'
+                },
                 files: [
                     { name: 'Hướng Dẫn Công Nghệ', note: 'Cổng chứa các hướng dẫn và thông số kỹ thuật', isFolder: true, targetId: 'huongdan_congnghe', iconOverride: 'folder-open', colorOverride: 'text-blue-400' },
                     { name: 'Tài Liệu Nội Bộ', note: 'Hướng dẫn vận hành máy và các quy định của nhà máy', isFolder: true, targetId: 'tailieu_noibo', iconOverride: 'folder-open', colorOverride: 'text-amber-400' },
-                    { name: 'Trung Tâm Liên Kết', note: 'Cổng Hub lưu trữ các đường link hệ thống', url: 'https://maivanthanh1405.github.io/portal-san-xuat/' }
+                    { name: 'Trung Tâm Liên Kết', note: 'Cổng Hub lưu trữ các đường link hệ thống', url: 'https://maivanthanh1405.github.io/portal-san-xuat/', iconOverride: 'globe', colorOverride: 'text-sky-400' }
                 ] 
             },
             {
                 id: 'kiemsoat',
-                colors: { bg: 'bg-rose-500/20', text: 'text-rose-400', glow: 'rgba(244,63,94,0.2)' },
-                iconName: 'list-checks', 
                 title: 'KIỂM SOÁT QUÁ TRÌNH',
                 desc: 'Theo dõi và kiểm soát các thông số kỹ thuật, quy trình chạy máy.',
+                iconName: 'list-checks', 
+                badgeText: '2 MỤC KSQT',
+                glow: 'rgba(244, 63, 94, 0.45)',
+                iconGlow: 'rgba(251, 113, 133, 0.6)',
+                colors: {
+                    text: 'text-rose-400',
+                    glow: 'from-rose-500/40 via-rose-500/10 to-transparent',
+                    bg: 'bg-rose-500/20',
+                    border: 'border-rose-500/30'
+                },
                 files: [
                     { name: 'Dữ Liệu Kiểm Soát Quá Trình', note: 'Dữ liệu kiểm soát vận hành các máy', isFolder: true, targetId: 'dulieu_kiemsoat', iconOverride: 'folder-open', colorOverride: 'text-rose-400' },
                     { name: 'Biểu Kiểm Soát Quá Trình', note: 'Biểu kiểm soát quá trình vận hành', url: 'https://ksqt360.netlify.app', iconOverride: 'bar-chart-2', colorOverride: 'text-rose-400' }
@@ -226,10 +705,18 @@
             // ================== CÁC THƯ MỤC ẨN BÊN TRONG ================== //
             {
                 id: 'huongdan_congnghe', hidden: true,
-                colors: { bg: 'bg-blue-500/20', text: 'text-blue-400', glow: 'rgba(59,130,246,0.2)' },
-                iconName: 'book-open', 
                 title: 'HƯỚNG DẪN CÔNG NGHỆ',
                 desc: 'Kho lưu trữ các quy chuẩn, hướng dẫn chung và thông số kỹ thuật của ngành.',
+                iconName: 'book-open', 
+                badgeText: '4 TÀI LIỆU',
+                glow: 'rgba(59, 130, 246, 0.45)',
+                iconGlow: 'rgba(96, 165, 250, 0.6)',
+                colors: {
+                    text: 'text-blue-400',
+                    glow: 'from-blue-500/40 via-blue-500/10 to-transparent',
+                    bg: 'bg-blue-500/20',
+                    border: 'border-blue-500/30'
+                },
                 files: [
                     { name: 'HƯỚNG DẪN CHUNG TRUNG THẾ', note: 'Tài liệu hướng dẫn chung Trung thế', url: 'https://drive.google.com/drive/folders/1YuCMXq0IZwREPAeYKMHH72xKZuu0SAnl?usp=sharing' },
                     { name: 'THÔNG SỐ KỸ THUẬT TRUNG THẾ', note: 'Tài liệu hướng dẫn thông số kỹ thuật Trung thế', url: 'https://drive.google.com/drive/folders/1QQnrR2d7WM_o8htKefrZXi2Dw1N0Q4Oc?usp=sharing' },
@@ -239,23 +726,39 @@
             },
             {
                 id: 'tailieu_noibo', hidden: true,
-                colors: { bg: 'bg-amber-500/20', text: 'text-amber-400', glow: 'rgba(245,158,11,0.2)' },
-                iconName: 'folder-open', 
                 title: 'TÀI LIỆU NỘI BỘ',
                 desc: 'Kho lưu trữ hướng dẫn vận hành, quy định và tài liệu nội bộ.',
+                iconName: 'folder-open', 
+                badgeText: '4 TÀI LIỆU',
+                glow: 'rgba(245, 158, 11, 0.45)',
+                iconGlow: 'rgba(251, 191, 36, 0.6)',
+                colors: {
+                    text: 'text-amber-400',
+                    glow: 'from-amber-500/40 via-amber-500/10 to-transparent',
+                    bg: 'bg-amber-500/20',
+                    border: 'border-amber-500/30'
+                },
                 files: [
                     { name: 'Hướng dẫn công nghệ', note: 'Tài liệu hướng dẫn công nghệ', url: 'https://drive.google.com/drive/folders/1tXn6ZrT4UmtHhdc8-1xqu4hPKmzcAkBL?usp=sharing' },
                     { name: 'Hướng dẫn vận hành', note: 'Tài liệu hướng dẫn vận hành thiết bị', url: 'https://drive.google.com/drive/folders/1KauhdhflWcgRGGeHklDBOO-w3lGXdTGX?usp=sharing' },
                     { name: 'Quy định của công ty', note: 'Các nội quy và quy định hiện hành', url: 'https://drive.google.com/drive/folders/1DNi8BD7VOWTxx5xzDIMAUtfj8QoUE9kc?usp=sharing' },
-                    { name: 'Tài liệu', note: 'Các biểu mẫu và tài liệu liên quan khác', url: 'https://drive.google.com/drive/folders/1DNi8BD7VOWTxx5xzDIMAUtfj8QoUE9kc?usp=sharing' }
+                    { name: 'Tài liệu biểu mẫu', note: 'Các biểu mẫu và tài liệu liên quan khác', url: 'https://drive.google.com/drive/folders/1DNi8BD7VOWTxx5xzDIMAUtfj8QoUE9kc?usp=sharing' }
                 ]
             },
             {
                 id: 'dulieu_kiemsoat', hidden: true,
-                colors: { bg: 'bg-rose-500/20', text: 'text-rose-400', glow: 'rgba(244,63,94,0.2)' },
-                iconName: 'database', 
                 title: 'DỮ LIỆU KIỂM SOÁT',
-                desc: 'Bảng dữ liệu ghi nhận thông số trong quá trình kiểm soát.',
+                desc: 'Bảng dữ liệu ghi nhận thông số trong quá trình kiểm soát vận hành.',
+                iconName: 'database', 
+                badgeText: '8 MÁY SẢN XUẤT',
+                glow: 'rgba(244, 63, 94, 0.45)',
+                iconGlow: 'rgba(251, 113, 133, 0.6)',
+                colors: {
+                    text: 'text-rose-400',
+                    glow: 'from-rose-500/40 via-rose-500/10 to-transparent',
+                    bg: 'bg-rose-500/20',
+                    border: 'border-rose-500/30'
+                },
                 files: [
                     { name: 'DỮ LIỆU KSQT MÁY 150-1', note: 'Lưu trữ dữ liệu KSQT máy 150-1', url: 'https://cadivivietnam.sharepoint.com/:f:/s/nmsaigon/IgAHytMpdE6dR4f_zZtMYTzKAR_w7ARtPzdisW8RvaQ_M6U?e=eMP5VC' },
                     { name: 'DỮ LIỆU KSQT MÁY 150-2', note: 'Lưu trữ dữ liệu KSQT máy 150-2', url: 'https://cadivivietnam.sharepoint.com/:f:/s/nmsaigon/IgCZ8DyFaMT6RIQhUDh7Wj0tAQQacJgedOUi73dVsbiqUgs?e=PHoMen' },
@@ -269,248 +772,665 @@
             }
         ];
 
-        lucide.createIcons();
-
-        // Xử lý Lời Chào thời gian thực
-        const greetingEl = document.getElementById('greeting-text');
-        const hour = new Date().getHours();
-        if (hour < 12) greetingEl.innerHTML = 'Chào buổi sáng <span class="text-sky-400">!</span>';
-        else if (hour < 18) greetingEl.innerHTML = 'Chào buổi chiều <span class="text-sky-400">!</span>';
-        else greetingEl.innerHTML = 'Chào buổi tối <span class="text-sky-400">!</span>';
-
-        // Xử lý Đồng hồ thời gian thực
-        const clockEl = document.getElementById('realtime-clock');
-        function updateClock() {
+        // ==================== ĐỒNG HỒ & TÍNH CA SẢN XUẤT ====================
+        function updateDateTimeAndShift() {
             const now = new Date();
-            clockEl.textContent = now.toLocaleTimeString('vi-VN', { hour12: false });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+            
+            // Đồng hồ thời gian thực
+            const clockEl = document.getElementById('realtime-clock');
+            if (clockEl) {
+                clockEl.textContent = now.toLocaleTimeString('vi-VN', { hour12: false });
+            }
 
+            // Ngày tháng thực tế
+            const dateEl = document.getElementById('realtime-date');
+            if (dateEl) {
+                const days = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+                const dayName = days[now.getDay()];
+                const d = String(now.getDate()).padStart(2, '0');
+                const m = String(now.getMonth() + 1).padStart(2, '0');
+                const y = now.getFullYear();
+                dateEl.textContent = `${dayName}, ${d}/${m}/${y}`;
+            }
+
+            // Ca sản xuất ngành sản xuất
+            const hours = now.getHours();
+            const shiftTextEl = document.getElementById('shift-text');
+            if (shiftTextEl) {
+                if (hours >= 6 && hours < 14) {
+                    shiftTextEl.innerHTML = `<span class="text-amber-400">Ca 1</span> (06:00 - 14:00)`;
+                } else if (hours >= 14 && hours < 22) {
+                    shiftTextEl.innerHTML = `<span class="text-cyan-400">Ca 2</span> (14:00 - 22:00)`;
+                } else {
+                    shiftTextEl.innerHTML = `<span class="text-indigo-400">Ca 3</span> (22:00 - 06:00)`;
+                }
+            }
+
+            // Lời chào theo thời gian
+            const greetingEl = document.getElementById('greeting-text');
+            if (greetingEl) {
+                if (hours >= 5 && hours < 12) greetingEl.textContent = 'Chào buổi sáng';
+                else if (hours >= 12 && hours < 18) greetingEl.textContent = 'Chào buổi chiều';
+                else greetingEl.textContent = 'Chào buổi tối';
+            }
+        }
+        setInterval(updateDateTimeAndShift, 1000);
+        updateDateTimeAndShift();
+
+        // ==================== HIỆU ỨNG TƯƠNG TÁC 3D VẬT LÝ (TILT & CURSOR SPOTLIGHT) ====================
+        // Spring Animation: con trỏ chỉ đặt "đích đến"; mỗi thẻ là một lò xo (stiffness / damping, khối lượng = 1) tự trượt
+        // về đích trong một vòng requestAnimationFrame dùng chung. Không có thời lượng cố định, và khi bị ngắt giữa chừng
+        // thì đi tiếp từ vị trí + vận tốc hiện tại, nên chuyển động liền mạch khi rê vào, rê ra hay lia nhanh qua nhiều thẻ.
+        const TILT_MAX_DEG = 7;                 // góc nghiêng tối đa
+        const TILT_EDGE_DEPTH = 24;             // mép thẻ nhô tối đa 24px: thẻ càng dài nghiêng càng ít để không tràn khung
+        const TILT_LIFT = [10, 25];             // khi rê chuột: [translateZ px, phóng to phần nghìn]
+        const TILT_PRESS = [-4, -15];           // khi nhấn giữ
+        const SPRING_FOLLOW = { stiffness: 580, damping: 43 };      // bám theo chuột: nhanh, không nảy
+        const SPRING_PRESS = { stiffness: 2000, damping: 80 };
+        const SPRING_RELEASE = { stiffness: 300, damping: 22 };     // rời chuột: vượt nhẹ qua đích rồi lắng lại
+        const hoverCapable = window.matchMedia('(hover: hover)');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const tiltActive = new Set();
+        let tiltFrame = 0;
+        let tiltLastTime = 0;
+
+        const tiltLimit = (halfSize) => Math.min(TILT_MAX_DEG, Math.asin(Math.min(1, TILT_EDGE_DEPTH / halfSize)) * (180 / Math.PI));
+
+        // Nghiệm chính xác của lò xo giảm chấn sau dt giây: luôn ổn định dù màn hình 60Hz hay 144Hz, kể cả khi rớt khung hình
+        function springCoefficients({ stiffness, damping }, dt) {
+            const omega = Math.sqrt(stiffness);                         // tần số riêng
+            const zeta = Math.min(0.999, damping / (2 * omega));        // tỉ số giảm chấn; nghiệm dưới đây cần < 1
+            const damped = omega * Math.sqrt(1 - zeta * zeta);
+            const decay = Math.exp(-zeta * omega * dt);
+            const cos = Math.cos(damped * dt);
+            const sin = Math.sin(damped * dt);
+            const k = (zeta * omega) / damped;
+            return [decay * (cos + k * sin), (decay * sin) / damped, (-decay * omega * omega * sin) / damped, decay * (cos - k * sin)];
+        }
+
+        function tiltRetarget(tilt) {
+            // Người dùng bật "giảm chuyển động": thẻ đứng yên, chỉ còn sáng lên và vệt sáng theo chuột
+            const still = reducedMotion.matches;
+            const lift = still ? null : tilt.pressed ? TILT_PRESS : tilt.hovered ? TILT_LIFT : null;
+            const tilted = !still && tilt.hovered && !tilt.pressed;
+            tilt.goal[0] = tilted ? tilt.aimX : 0;
+            tilt.goal[1] = tilted ? tilt.aimY : 0;
+            tilt.goal[2] = lift ? lift[0] : 0;
+            tilt.goal[3] = lift ? lift[1] : 0;
+
+            tiltActive.add(tilt);
+            if (!tiltFrame) tiltFrame = requestAnimationFrame(tiltTick);
+        }
+
+        function tiltTick(now) {
+            const dt = tiltLastTime ? Math.min((now - tiltLastTime) / 1000, 0.05) : 1 / 60;
+            tiltLastTime = now;
+
+            for (const tilt of tiltActive) {
+                if (!tilt.card.isConnected) {
+                    tiltActive.delete(tilt);
+                    continue;
+                }
+
+                const spring = tilt.pressed ? SPRING_PRESS : tilt.hovered ? SPRING_FOLLOW : SPRING_RELEASE;
+                const [keepPos, velToPos, posToVel, keepVel] = springCoefficients(spring, dt);
+                let settled = true;
+                for (let i = 0; i < 4; i++) {
+                    const offset = tilt.pos[i] - tilt.goal[i];
+                    tilt.pos[i] = tilt.goal[i] + keepPos * offset + velToPos * tilt.vel[i];
+                    tilt.vel[i] = posToVel * offset + keepVel * tilt.vel[i];
+                    if (Math.abs(tilt.pos[i] - tilt.goal[i]) > 0.01 || Math.abs(tilt.vel[i]) > 0.1) settled = false;
+                }
+
+                // Thẻ bị ẩn ngay lúc đang hover (vừa bấm mở danh mục) sẽ không nhận được pointerleave: tự trả về vị trí nghỉ
+                if (settled && tilt.hovered && !tilt.container.matches(':hover')) {
+                    tilt.hovered = tilt.pressed = false;
+                    tilt.goal.fill(0);
+                    settled = false;
+                }
+                if (settled) tiltActive.delete(tilt);
+
+                if (settled && !tilt.goal.some(Boolean)) {
+                    tilt.card.style.transform = '';
+                } else {
+                    const [rotateX, rotateY, lift, grow] = tilt.pos;
+                    const scale = (1 + grow / 1000).toFixed(4);
+                    tilt.card.style.transform = `rotateX(${rotateX.toFixed(3)}deg) rotateY(${rotateY.toFixed(3)}deg) translateZ(${lift.toFixed(2)}px) scale3d(${scale}, ${scale}, ${scale})`;
+                }
+
+                if (tilt.shineMoved) {
+                    tilt.shine.style.setProperty('--mx', `${tilt.shineX}px`);
+                    tilt.shine.style.setProperty('--my', `${tilt.shineY}px`);
+                    tilt.shineMoved = false;
+                }
+            }
+
+            tiltFrame = tiltActive.size ? requestAnimationFrame(tiltTick) : 0;
+            if (!tiltFrame) tiltLastTime = 0;
+        }
+
+        function init3DTiltPhysics() {
+            const cards = document.querySelectorAll('.volumetric-card:not(.tilt-init)');
+            cards.forEach(card => {
+                card.classList.add('tilt-init');
+                const container = card.closest('.volumetric-container') || card;
+                const tilt = {
+                    card,
+                    container,
+                    shine: card.querySelector('.specular-shine'),
+                    pos: [0, 0, 0, 0],      // [rotateX°, rotateY°, translateZ px, phóng to phần nghìn]
+                    vel: [0, 0, 0, 0],
+                    goal: [0, 0, 0, 0],
+                    aimX: 0,
+                    aimY: 0,
+                    shineX: 0,
+                    shineY: 0,
+                    shineMoved: false,
+                    hovered: false,
+                    pressed: false
+                };
+
+                const follow = (e) => {
+                    // Cùng điều kiện với @media (hover: hover) bên CSS: chạm bằng ngón tay thì không có hover
+                    if (e.pointerType === 'touch' || !hoverCapable.matches) return;
+                    const rect = container.getBoundingClientRect();
+                    if (!rect.width || !rect.height) return;
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    // Vị trí con trỏ so với tâm thẻ, chuẩn hoá về [-1, 1]
+                    const offsetX = Math.max(-1, Math.min(1, (x / rect.width) * 2 - 1));
+                    const offsetY = Math.max(-1, Math.min(1, (y / rect.height) * 2 - 1));
+                    tilt.aimX = -offsetY * tiltLimit(rect.height / 2);
+                    tilt.aimY = offsetX * tiltLimit(rect.width / 2);
+
+                    // Cursor Spotlight: ghi thẳng toạ độ vào biến CSS của lớp sáng (không qua render lại)
+                    tilt.shineX = x;
+                    tilt.shineY = y;
+                    tilt.shineMoved = !!tilt.shine;
+                    tilt.hovered = true;
+                    tiltRetarget(tilt);
+                };
+
+                const release = () => {
+                    if (!tilt.pressed) return;
+                    tilt.pressed = false;
+                    tiltRetarget(tilt);
+                };
+
+                container.addEventListener('pointerenter', follow);
+                container.addEventListener('pointermove', follow);
+                container.addEventListener('pointerleave', () => {
+                    tilt.hovered = tilt.pressed = false;
+                    tiltRetarget(tilt);
+                });
+                container.addEventListener('pointerdown', (e) => {
+                    if (e.button !== 0) return;
+                    tilt.pressed = true;
+                    tiltRetarget(tilt);
+                });
+                container.addEventListener('pointerup', release);
+                container.addEventListener('pointercancel', release);
+            });
+        }
+
+        // ==================== TRÌNH KẾT XUẤT CÁC DANH MỤC TRANG CHỦ ====================
         const categoriesGrid = document.getElementById('categories-grid');
         const homeView = document.getElementById('home-view');
         const detailView = document.getElementById('detail-view');
+        let currentView = 'home';
+        let currentParent = null;
 
-        // Hàm render giao diện trang chủ
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+        }
+
         function renderCategories() {
             categoriesGrid.innerHTML = '';
             const visibleCats = FILE_CATEGORIES.filter(cat => !cat.hidden);
-            
-            visibleCats.forEach((cat, idx) => {
-                const animDelay = idx * 100;
-                let extraClasses = '';
-                if (visibleCats.length === 7 && idx === 6) {
-                    extraClasses = 'md:col-span-2 lg:col-span-1 lg:col-start-2';
-                }
 
-                // Chuyển đổi style card sang Dark Mode 3D
-                const buttonHTML = `
-                    <button
+            visibleCats.forEach((cat, index) => {
+                const cardHTML = `
+                    <div
+                        role="button"
+                        tabindex="0"
+                        aria-label="${cat.title}: ${cat.desc}"
                         onclick="openCategoryDetail('${cat.id}')"
-                        class="vision-container group relative text-left outline-none focus:outline-none animate-in fade-in slide-in-from-bottom-12 h-full w-full ${extraClasses}"
-                        style="animation-delay: ${animDelay}ms; animation-fill-mode: both; perspective: 1200px;"
+                        class="portal-card-item volumetric-container block w-full h-full cursor-pointer"
+                        style="perspective: 1200px; --i: ${index};"
                     >
-                        <div class="vision-card relative h-full bg-slate-800 border border-white/10 rounded-2xl p-6 md:p-8 flex flex-col" style="transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out; box-shadow: 0 8px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);">
-                            
-                            <div class="flex items-start justify-between mb-8 relative z-10" style="transform: translateZ(30px);">
-                                <div class="w-14 h-14 rounded-2xl ${cat.colors.bg} flex items-center justify-center border border-white/5" style="box-shadow: 0 6px 12px ${cat.colors.glow}, inset 0 2px 4px rgba(255,255,255,0.05);">
-                                    <i data-lucide="${cat.iconName}" class="w-7 h-7 ${cat.colors.text}"></i>
+                        <div class="volumetric-card h-full p-6 sm:p-7 flex flex-col justify-between cursor-pointer"
+                             style="--card-glow: ${cat.glow}; --icon-glow: ${cat.iconGlow};">
+
+                            <!-- Cursor Spotlight -->
+                            <div class="specular-shine"></div>
+
+                            <!-- Hào quang nền phía sau -->
+                            <div class="volumetric-clip">
+                                <div class="absolute -top-12 -right-12 w-44 h-44 rounded-full ${cat.colors.bg} blur-3xl"></div>
+                            </div>
+
+                            <!-- Header Thẻ: Icon 3D Nổi Khối + Huy Hiệu Phân Loại -->
+                            <div class="flex items-start justify-between relative z-10 mb-6">
+                                <div class="icon-box-3d w-14 h-14 flex items-center justify-center ${cat.colors.text} ${cat.colors.bg} ${cat.colors.border}">
+                                    <i data-lucide="${cat.iconName}" class="w-7 h-7"></i>
                                 </div>
-                                <div class="w-8 h-8 rounded-full border border-slate-700 bg-slate-800/50 flex items-center justify-center text-slate-400 group-hover:bg-slate-700 group-hover:text-white group-hover:border-slate-600 transition-colors">
-                                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+
+                                <div class="flex items-center gap-2" style="transform: translateZ(35px);">
+                                    <span class="embossed-badge px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider ${cat.colors.text} ${cat.colors.border}">
+                                        ${cat.badgeText}
+                                    </span>
+                                    <div class="w-8 h-8 rounded-full bg-white/[0.04] border border-white/[0.1] flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+                                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div class="relative z-10 mt-auto" style="transform: translateZ(15px);">
-                                <h3 class="text-xl font-extrabold text-textmain mb-2 tracking-wide">${cat.title}</h3>
-                                <p class="text-sm text-textmuted font-medium mb-5 leading-relaxed">${cat.desc}</p>
-                                
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="activity" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-[10px] font-bold font-mono text-slate-500 uppercase tracking-widest">
-                                        ${cat.files.length} TÀI LIỆU
+                            <!-- Thân Thẻ: Tiêu đề & Nội dung -->
+                            <div class="relative z-10 mt-auto" style="transform: translateZ(28px);">
+                                <h3 class="text-lg font-bold text-white mb-2 tracking-wide group-hover:${cat.colors.text} transition-colors flex items-center gap-2">
+                                    ${cat.title}
+                                </h3>
+                                <p class="text-slate-400 text-xs sm:text-sm leading-relaxed mb-5 line-clamp-2">
+                                    ${cat.desc}
+                                </p>
+
+                                <div class="flex items-center justify-between pt-3 border-t border-white/[0.08]">
+                                    <span class="text-[11px] font-mono ${cat.colors.text} font-medium tracking-wider flex items-center gap-1">
+                                        <i data-lucide="layers" class="w-3 h-3"></i> XEM CHI TIẾT
                                     </span>
+                                    <div class="w-7 h-7 rounded-full bg-white/[0.06] border border-white/[0.15] flex items-center justify-center ${cat.colors.text} transition-transform duration-300 group-hover:translate-x-1">
+                                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
-                    </button>
+                    </div>
                 `;
-                categoriesGrid.insertAdjacentHTML('beforeend', buttonHTML);
+                categoriesGrid.insertAdjacentHTML('beforeend', cardHTML);
             });
+
             lucide.createIcons();
-            initVisionProEffect();
+            init3DTiltPhysics();
         }
 
-        // Script tạo độ nghiêng 3D điều chỉnh cho Dark Theme
-        window.initVisionProEffect = function() {
-            const containers = document.querySelectorAll('.vision-container:not(.vision-init)');
-            containers.forEach(container => {
-                container.classList.add('vision-init');
-                const card = container.querySelector('.vision-card');
-                if(!card) return;
-                
-                container.addEventListener('mousemove', (e) => {
-                    const rect = container.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-                    
-                    const centerX = rect.width / 2;
-                    const centerY = rect.height / 2;
-                    
-                    const rotateX = ((y - centerY) / centerY) * -5; 
-                    const rotateY = ((x - centerX) / centerX) * 5;
-                    
-                    card.style.transition = 'transform 0.1s ease-out, box-shadow 0.1s ease-out';
-                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                    card.style.boxShadow = `0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1)`;
-                });
-                
-                container.addEventListener('mouseleave', () => {
-                    card.style.transition = 'transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out';
-                    card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                    card.style.boxShadow = `0 8px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)`;
-                });
-            });
-        };
+        // ==================== TRÌNH XEM CHI TIẾT DANH MỤC (DETAIL VIEW NỔI KHỐI) ====================
+        function getFileIcon(file) {
+            if (file.iconOverride) return file.iconOverride;
+            if (file.isFolder) return 'folder-open';
+            const url = file.url || '';
+            if (url.includes('spreadsheets') || url.includes('docs.google')) return 'file-spreadsheet';
+            if (url.includes('drive.google')) return 'folder';
+            if (url.includes('sharepoint.com')) return 'database';
+            if (url.includes('netlify.app') || url.includes('github.io')) return 'globe';
+            return 'file-text';
+        }
 
-        renderCategories();
-
-        let heightTimeout;
-
-        // Xử lý mở Màn hình Chi Tiết
         window.openCategoryDetail = function(categoryId, parentId = null) {
-            const category = FILE_CATEGORIES.find(c => c.id === categoryId);
-            if (!category) return;
+            const data = FILE_CATEGORIES.find(c => c.id === categoryId);
+            if (!data) return;
 
+            currentView = categoryId;
+            currentParent = parentId;
+
+            scrollToTop();
+
+            const parentCategory = parentId ? FILE_CATEGORIES.find(c => c.id === parentId) : null;
+            const parentTitle = parentCategory ? parentCategory.title : 'Mục Trước';
+
+            // Xây dựng danh sách tệp
             let filesHTML = '';
-            category.files.forEach(file => {
-                const isFolder = file.isFolder;
-                const tag = isFolder ? 'button' : 'a';
-                const actionAttr = isFolder 
-                    ? `onclick="openCategoryDetail('${file.targetId}', '${categoryId}')"` 
-                    : `href="${file.url}" target="_blank" rel="noopener noreferrer"`;
-                
-                const arrowIcon = isFolder ? 'chevron-right' : 'arrow-right';
-                const arrowRotate = isFolder ? '' : '-rotate-45';
-                const actionText = isFolder ? 'MỞ MỤC' : 'MỞ FILE';
-                
-                const iconName = file.iconOverride || 'file-text';
-                const iconColor = file.colorOverride || category.colors.text;
+            data.files.forEach((file, index) => {
+                const iconName = getFileIcon(file);
+                const itemIconColor = file.colorOverride || data.colors.text;
 
+                let actionButtons = '';
+                if (file.isFolder) {
+                    actionButtons = `
+                        <span class="embossed-badge px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider ${data.colors.text} border-white/10 hidden sm:inline-block">
+                            THƯ MỤC
+                        </span>
+                        <button
+                            type="button"
+                            onclick="openCategoryDetail('${file.targetId}', '${categoryId}')"
+                            class="btn-3d px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider text-white bg-white/10 group-hover:bg-white/20 flex items-center gap-2 cursor-pointer"
+                        >
+                            <span>MỞ MỤC</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-white group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    `;
+                } else if (!file.url || file.url === '#') {
+                    // Chưa có liên kết: hiện nhãn trạng thái (Pill) thay cho một nút bấm vào mà không đi tới đâu
+                    actionButtons = `
+                        <span class="px-3 py-2 rounded-full text-[11px] font-mono font-bold tracking-wider whitespace-nowrap text-slate-500 border border-dashed border-white/15 flex items-center gap-2">
+                            <i data-lucide="link-2-off" class="w-3.5 h-3.5"></i>
+                            CHƯA CÓ LIÊN KẾT
+                        </span>
+                    `;
+                } else {
+                    actionButtons = `
+                        <a
+                            href="${file.url}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn-3d px-4 py-2 rounded-xl text-xs font-mono font-bold tracking-wider text-white bg-white/10 group-hover:bg-white/20 flex items-center gap-2 no-underline cursor-pointer"
+                        >
+                            <span>MỞ TÀI LIỆU</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"></i>
+                        </a>
+                    `;
+                }
+
+                // Truncation: từ màn hình sm trở lên, tên / ghi chú dài bị cắt "…" trên một dòng (xem đủ bằng tooltip);
+                // trên điện thoại không có hover nên để chữ tự xuống dòng, không giấu nội dung
                 filesHTML += `
-                    <${tag} ${actionAttr} class="text-left vision-container group relative block w-full outline-none focus:outline-none mb-3" style="perspective: 1000px;">
-                        <div class="vision-card flex items-center justify-between p-4 rounded-2xl bg-slate-800/80 border border-white/5 cursor-pointer shadow-sm hover:border-slate-600" style="transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.6s ease-out, border-color 0.3s;">
-                            
-                            <div class="flex items-center gap-4 relative z-10 min-w-0 flex-1" style="transform: translateZ(15px);">
-                                <div class="w-12 h-12 rounded-[12px] bg-slate-900/50 border border-white/5 flex items-center justify-center ${iconColor} transition-colors shrink-0 shadow-inner">
-                                    <i data-lucide="${iconName}" class="w-5 h-5"></i>
+                    <div class="volumetric-container block w-full group" style="perspective: 1000px; --i: ${index};">
+                        <div class="volumetric-card p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4" style="--card-glow: ${data.glow};">
+
+                            <!-- Cursor Spotlight -->
+                            <div class="specular-shine"></div>
+
+                            <div class="flex items-center gap-4 min-w-0 flex-1 relative z-10" style="transform: translateZ(25px);">
+                                <div class="w-12 h-12 rounded-xl bg-white/[0.05] border border-white/[0.12] flex items-center justify-center ${itemIconColor} shrink-0 shadow-lg group-hover:scale-105 transition-transform">
+                                    <i data-lucide="${iconName}" class="w-6 h-6"></i>
                                 </div>
-                                
-                                <div class="flex-1 min-w-0 pr-4">
-                                    <h4 class="font-extrabold tracking-tight text-textmain text-lg truncate mb-0.5 group-hover:text-sky-400 transition-colors">
+                                <div class="min-w-0 flex-1">
+                                    <h4 class="font-bold text-white text-base tracking-wide group-hover:${data.colors.text} transition-colors mb-1 sm:truncate">
                                         ${file.name}
                                     </h4>
-                                    <p class="text-sm text-textmuted truncate font-medium">
+                                    <p class="text-xs sm:text-sm text-slate-400 font-normal leading-relaxed sm:truncate">
                                         ${file.note}
                                     </p>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-4 relative z-10 shrink-0" style="transform: translateZ(20px);">
-                                <span class="text-xs font-bold text-slate-500 tracking-widest opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all duration-300 hidden sm:block">
-                                    ${actionText}
-                                </span>
-                                <div class="w-9 h-9 rounded-full border border-slate-700 bg-slate-900/50 flex items-center justify-center text-slate-400 group-hover:bg-slate-700 group-hover:text-slate-200 group-hover:border-slate-600 transition-colors shrink-0">
-                                    <i data-lucide="${arrowIcon}" class="w-4 h-4 ${arrowRotate}"></i>
-                                </div>
+                            <div class="flex items-center gap-2.5 shrink-0 self-end sm:self-center relative z-10" style="transform: translateZ(35px);">
+                                ${actionButtons}
                             </div>
+
                         </div>
-                    </${tag}>
+                    </div>
                 `;
             });
 
-            const backAction = parentId 
-                ? `onclick="openCategoryDetail('${parentId}')"` 
-                : `onclick="closeCategoryDetail()"`;
+            // Chỉ danh sách dài mới cần khung cuộn riêng. Khung cuộn luôn cắt phần thẻ phóng to / hào quang khi hover,
+            // nên danh sách ngắn để tự do; danh sách dài thì chừa lề (lề âm + đệm) quanh các thẻ.
+            const listScrollClasses = data.files.length > 6
+                ? 'max-h-[732px] overflow-y-auto -my-4 py-4 -mx-4 px-4 lg:-mx-6 lg:px-6'
+                : '';
+
+            // Nút quay về
+            const backButtonHTML = `
+                <button
+                    type="button"
+                    onclick="${parentId ? `openCategoryDetail('${parentId}')` : 'backToHome()'}"
+                    class="btn-3d flex items-center gap-2 text-white font-bold text-xs tracking-wider uppercase px-4 py-2.5 rounded-full cursor-pointer"
+                >
+                    <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    Quay Về ${parentId ? parentTitle : 'Trang Chủ'}
+                </button>
+            `;
+
+            // Breadcrumbs: mỗi cấp cha là một liên kết, mục cuối là trang hiện tại (aria-current, không phải liên kết).
+            // Khi hẹp, cấp ở giữa thu lại thành "…" thay vì để cả hàng rớt xuống hai dòng; trang chủ và trang hiện tại luôn hiện.
+            const crumbLinkClasses = 'rounded-sm hover:text-white transition-colors';
+            const crumbClasses = 'flex items-center gap-2';
+            const parentCrumbHTML = parentId ? `
+                <li class="${crumbClasses} shrink-0">
+                    <a href="#" onclick="openCategoryDetail('${parentId}'); return false;" class="${crumbLinkClasses}" aria-label="${parentTitle}" title="${parentTitle}">
+                        <span class="sm:hidden" aria-hidden="true">…</span>
+                        <span class="hidden sm:inline">${parentTitle}</span>
+                    </a>
+                </li>
+            ` : '';
+            const breadcrumbHTML = `
+                <li class="${crumbClasses} shrink-0">
+                    <a href="#" onclick="backToHome(); return false;" class="${crumbLinkClasses}">TRANG CHỦ</a>
+                </li>
+                ${parentCrumbHTML}
+                <li class="${crumbClasses} min-w-0 ${data.colors.text} font-bold" aria-current="page">
+                    <span class="truncate">${data.title}</span>
+                </li>
+            `;
 
             detailView.innerHTML = `
-                <div class="w-full h-[80vh] max-h-[700px] flex flex-col lg:flex-row gap-5 relative animate-in fade-in zoom-in-95 duration-500">
-                    
-                    <div class="w-full lg:w-[38%] h-full rounded-[2rem] bg-slate-800/90 border border-white/10 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.05)] p-8 flex flex-col relative overflow-hidden">
-                        
-                        <button 
-                            ${backAction}
-                            class="self-start flex items-center gap-2 text-slate-400 hover:text-white font-bold text-xs tracking-widest uppercase px-5 py-2.5 rounded-full bg-slate-800/80 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 hover:shadow-lg transition-all group relative z-20"
-                        >
-                            <i data-lucide="chevron-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i>
-                            Trở Về
-                        </button>
+                <div class="w-full flex flex-col gap-6">
 
-                        <div class="mt-auto relative z-20 mb-6">
-                            <div class="relative mb-6 inline-block">
-                                <div class="w-20 h-20 rounded-[1.2rem] ${category.colors.bg} flex items-center justify-center relative z-10 border border-white/5 shadow-[0_8px_16px_${category.colors.glow},inset_0_2px_4px_rgba(255,255,255,0.05)]">
-                                    <i data-lucide="${category.iconName}" class="w-8 h-8 ${category.colors.text}"></i>
+                    <!-- Thanh Điều Hướng Trên (Breadcrumb & Action Bar) -->
+                    <div class="view-enter flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md">
+                        ${backButtonHTML}
+
+                        <nav aria-label="Đường dẫn điều hướng" class="min-w-0 max-w-full">
+                            <ol class="breadcrumb flex items-center gap-2 text-xs font-mono text-slate-400">
+                                ${breadcrumbHTML}
+                            </ol>
+                        </nav>
+                    </div>
+
+                    <!-- Layout 2 Cột: Bên Trái Tổng Quan, Bên Phải Danh Sách Tệp -->
+                    <div class="flex flex-col lg:flex-row gap-6">
+
+                        <!-- Cột Trái: Banner Danh Mục Nổi Khối -->
+                        <div class="view-enter w-full lg:w-[36%] rounded-[2rem] bg-gradient-to-br from-[#0c1324]/90 to-[#070b16]/95 border border-white/[0.12] p-8 flex flex-col justify-between relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.8)]">
+                            <div class="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-gradient-to-br ${data.colors.glow} blur-3xl pointer-events-none"></div>
+
+                            <div class="relative z-10">
+                                <div class="icon-box-3d w-20 h-20 rounded-2xl flex items-center justify-center ${data.colors.text} ${data.colors.bg} border border-white/20 mb-6">
+                                    <i data-lucide="${data.iconName}" class="w-10 h-10"></i>
                                 </div>
+
+                                <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight mb-3 leading-snug">
+                                    ${data.title}
+                                </h2>
+
+                                <p class="text-sm text-slate-300 leading-relaxed font-normal mb-6">
+                                    ${data.desc}
+                                </p>
                             </div>
 
-                            <h2 class="text-4xl font-extrabold text-textmain tracking-tight mb-3 leading-tight drop-shadow-sm">
-                                ${category.title}
-                            </h2>
-                            <p class="text-textmuted font-medium text-lg max-w-sm mb-6 leading-relaxed">
-                                ${category.desc}
-                            </p>
-                            
-                            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/50 border border-white/5">
-                                <i data-lucide="database" class="w-4 h-4 text-slate-500"></i>
-                                <span class="text-xs font-bold text-slate-400 tracking-wide">${category.files.length} Dữ liệu khả dụng</span>
+                            <div class="relative z-10 pt-6 border-t border-white/[0.08] flex items-center justify-between">
+                                <div class="flex items-center gap-2 text-xs font-mono text-slate-300">
+                                    <i data-lucide="database" class="w-4 h-4 text-slate-400"></i>
+                                    <span>${data.files.length} Dữ liệu sẵn sàng</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold whitespace-nowrap bg-white/10 text-white border border-white/15">
+                                    CHÍNH THỨC
+                                </span>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="w-full lg:w-[62%] h-full rounded-[2rem] bg-slate-900/60 backdrop-blur-md border border-white/5 shadow-[0_8px_24px_rgba(0,0,0,0.4)] p-4 lg:p-5 flex flex-col relative">
-                        <div class="px-4 py-2 flex items-center justify-between border-b border-slate-700/50 shrink-0 mb-3">
-                            <span class="text-xs font-extrabold tracking-[0.15em] text-slate-500 uppercase">Tài Liệu Chi Tiết</span>
-                            <i data-lucide="sparkles" class="w-4 h-4 text-slate-600"></i>
+                        <!-- Cột Phải: Danh Sách Các Tệp Đầy Đủ -->
+                        <div class="w-full lg:w-[64%] flex flex-col gap-3">
+                            <div class="view-enter flex items-center justify-between px-2 mb-1">
+                                <span class="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+                                    DANH SÁCH TỆP DỮ LIỆU (${data.files.length})
+                                </span>
+                                <span class="text-[11px] text-slate-500">Hệ Thống Trực Tuyến</span>
+                            </div>
+
+                            <div class="space-y-3.5 ${listScrollClasses}">
+                                ${filesHTML}
+                            </div>
                         </div>
 
-                        <div class="flex-1 overflow-y-auto overflow-x-hidden p-1 custom-scrollbar">
-                            ${filesHTML}
-                        </div>
                     </div>
+
                 </div>
             `;
+
             lucide.createIcons();
 
-            if (!parentId) {
-                homeView.classList.remove('opacity-100', 'scale-100', 'relative');
-                homeView.classList.add('opacity-0', 'scale-95', 'pointer-events-none', 'absolute', 'inset-0');
-                
-                detailView.classList.remove('opacity-0', 'scale-105', 'pointer-events-none', 'absolute', 'inset-x-0');
-                detailView.classList.add('opacity-100', 'scale-100', 'relative');
+            homeView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+
+            init3DTiltPhysics();
+        };
+
+        window.backToHome = function() {
+            scrollToTop();
+            currentView = 'home';
+            currentParent = null;
+
+            detailView.classList.add('hidden');
+            homeView.classList.remove('hidden');
+        };
+
+        // Phím Esc quay về thư mục cha hoặc trang chủ
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && currentView !== 'home') {
+                if (currentParent) {
+                    openCategoryDetail(currentParent);
+                } else {
+                    backToHome();
+                }
+            }
+        });
+
+        // Thẻ danh mục là role="button": Enter / Space phải kích hoạt được như một nút thật
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('.volumetric-container[role="button"]')) {
+                e.preventDefault();
+                e.target.click();
+            }
+        });
+
+        // Truncation: chữ nào đang bị cắt "…" thì cho xem đủ nội dung qua tooltip (chỉ gắn title khi thực sự bị cắt)
+        document.addEventListener('pointerover', (e) => {
+            const text = e.target.closest('.truncate, .sm\\:truncate, .line-clamp-2');
+            if (!text) return;
+            if (text.scrollWidth > text.clientWidth || text.scrollHeight > text.clientHeight) {
+                text.title = text.textContent.trim();
+            } else {
+                text.removeAttribute('title');
+            }
+        });
+
+        // ==================== CANVAS LƯỚI ĐIỆN ĐỘNG NĂNG LƯỢNG (INTERACTIVE PARTICLES) ====================
+        function initEnergyCanvas() {
+            const canvas = document.getElementById('energy-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let w, h;
+            let mouse = { x: -1000, y: -1000, radius: 120 };
+
+            function resize() {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', () => {
+                resize();
+                if (reducedMotion.matches) animate();   // đổi kích thước làm canvas bị xoá: ở chế độ tĩnh phải vẽ lại
+            });
+            resize();
+
+            window.addEventListener('mousemove', (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            window.addEventListener('mouseleave', () => {
+                mouse.x = -1000;
+                mouse.y = -1000;
+            });
+
+            const particleCount = Math.min(Math.floor((w * h) / 22000), 55);
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * w;
+                    this.y = Math.random() * h;
+                    this.size = Math.random() * 2 + 1;
+                    this.vx = (Math.random() - 0.5) * 0.4;
+                    this.vy = (Math.random() - 0.5) * 0.4;
+                    this.alpha = Math.random() * 0.4 + 0.2;
+                    this.hue = Math.random() > 0.5 ? 195 : 240; // Xanh cyan & lam
+                }
+
+                update() {
+                    this.x += this.vx;
+                    this.y += this.vy;
+
+                    if (this.x < 0) this.x = w;
+                    if (this.x > w) this.x = 0;
+                    if (this.y < 0) this.y = h;
+                    if (this.y > h) this.y = 0;
+
+                    // Phản xạ nhẹ với chuột
+                    const dx = mouse.x - this.x;
+                    const dy = mouse.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius) {
+                        const force = (mouse.radius - dist) / mouse.radius;
+                        this.x -= (dx / dist) * force * 2;
+                        this.y -= (dy / dist) * force * 2;
+                    }
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `hsla(${this.hue}, 85%, 65%, ${this.alpha})`;
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = `hsla(${this.hue}, 85%, 65%, 0.8)`;
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                }
             }
 
-            window.scrollTo(0, 0);
-            initVisionProEffect();
-        };
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
 
-        window.closeCategoryDetail = function() {
-            const mainEl = document.querySelector('main');
-            clearTimeout(heightTimeout);
-            mainEl.style.height = mainEl.offsetHeight + 'px';
+            function animate() {
+                ctx.clearRect(0, 0, w, h);
 
-            window.scrollTo(0, 0);
+                // Vẽ liên kết giữa các hạt điện
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dx = particles[i].x - particles[j].x;
+                        const dy = particles[i].y - particles[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
 
-            detailView.classList.remove('opacity-100', 'scale-100', 'relative');
-            detailView.classList.add('opacity-0', 'scale-105', 'pointer-events-none', 'absolute', 'inset-x-0');
+                        if (dist < 110) {
+                            const lineAlpha = (1 - dist / 110) * 0.18;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.strokeStyle = `rgba(56, 189, 248, ${lineAlpha})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
 
-            homeView.classList.remove('opacity-0', 'scale-95', 'pointer-events-none', 'absolute', 'inset-0');
-            homeView.classList.add('opacity-100', 'scale-100', 'relative');
-            
-            heightTimeout = setTimeout(() => {
-                mainEl.style.height = 'auto';
-            }, 500);
-        };
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
 
+                // Người dùng bật "giảm chuyển động": chỉ vẽ một khung hình tĩnh rồi dừng
+                if (!reducedMotion.matches) requestAnimationFrame(animate);
+            }
+
+            reducedMotion.addEventListener('change', () => {
+                if (!reducedMotion.matches) animate();
+            });
+            animate();
+        }
+
+        // ==================== KHỞI TẠO TỔNG THỂ ====================
+        function initApp() {
+            renderCategories();
+            initEnergyCanvas();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }
     </script>
 </body>
 </html>
